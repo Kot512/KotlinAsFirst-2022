@@ -3,6 +3,7 @@
 package lesson2.task2
 
 import lesson1.task1.sqr
+import kotlin.math.*
 
 /**
  * Пример
@@ -18,20 +19,20 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Четырехзначное число назовем счастливым, если сумма первых двух ее цифр равна сумме двух последних.
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
-fun isNumberHappy(number: Int): Boolean {
-    return ((number / 1000) + ((number / 100) % 10)) == ((number % 10) + ((number / 10) % 10))
-}
-    /**
-     * Простая (2 балла)
-     *
-     * На шахматной доске стоят два ферзя (ферзь бьет по вертикали, горизонтали и диагоналям).
-     * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
-     * Считать, что ферзи не могут загораживать друг друга.
-     */
+fun isNumberHappy(number: Int): Boolean =
+    ((number / 1000) + ((number / 100) % 10)) == ((number % 10) + ((number / 10) % 10))
 
-fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
-    return ((x1 == x2) || (y1 == y2) || (kotlin.math.abs(x1 - x2) == kotlin.math.abs(y1 - y2)))
-}
+/**
+ * Простая (2 балла)
+ *
+ * На шахматной доске стоят два ферзя (ферзь бьет по вертикали, горизонтали и диагоналям).
+ * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
+ * Считать, что ферзи не могут загораживать друг друга.
+ */
+
+fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
+    ((x1 == x2) || (y1 == y2) || (abs(x1 - x2) == abs(y1 - y2)))
+
 
 /**
  * Простая (2 балла)
@@ -58,7 +59,7 @@ fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
 ): Boolean {
-    val centersDistance = kotlin.math.sqrt(sqr(x1 - x2) + sqr(y1 - y2))
+    val centersDistance = sqrt(sqr(x1 - x2) + sqr(y1 - y2))
     return when {
         centersDistance <= r1 -> (r1 + centersDistance) <= r2
         else -> (2 * r1 + centersDistance) <= r2

@@ -70,9 +70,11 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String {
-    if (((age % 100) in 10..20) || ((age % 10) in 5..9) || (age % 10 == 0)) return "$age лет"
-    else if (age % 10 == 1) return "$age год"
-    else return "$age года"
+    return when {
+        (((age % 100) in 10..20) || ((age % 10) in 5..9) || (age % 10 == 0)) -> "$age лет"
+        (age % 10 == 1) -> "$age год"
+        else -> "$age года"
+    }
 }
 
 /**
@@ -88,21 +90,19 @@ fun timeForHalfWay(
     t3: Double, v3: Double
 ): Double {
     val sHalf = (t1 * v1 + t2 * v2 + t3 * v3) / 2.0
-    if ((t1 * v1) >= sHalf) return (sHalf / v1)
-    else {
-        when {
-            (t1 * v1) + (v2 * t2) == sHalf -> return t1 + t2
-            (t1 * v1) + (v2 * t2) > sHalf -> {
-                val sRemained = sHalf - (t1 * v1)
-                val tRemained = sRemained / v2
-                return t1 + tRemained
-            }
+    return when {
+        t1 * v1 >= sHalf -> sHalf / v1
+        t1 * v1 + v2 * t2 == sHalf -> return t1 + t2
+        t1 * v1 + v2 * t2 > sHalf -> {
+            val sRemained = sHalf - t1 * v1
+            val tRemained = sRemained / v2
+            return t1 + tRemained
+        }
 
-            else -> {
-                val sRemained = sHalf - (t1 * v1) - (t2 * v2)
-                val tRemained = sRemained / v3
-                return t1 + t2 + tRemained
-            }
+        else -> {
+            val sRemained = sHalf - t1 * v1 - t2 * v2
+            val tRemained = sRemained / v3
+            return t1 + t2 + tRemained
         }
     }
 }
@@ -122,10 +122,10 @@ fun whichRookThreatens(
     rookX2: Int, rookY2: Int
 ): Int {
     var count = 0
-    if ((kingX == rookX1) || (kingY == rookY1)) {
+    if (kingX == rookX1 || kingY == rookY1) {
         count += 1
     }
-    if ((kingX == rookX2) || (kingY == rookY2)) {
+    if (kingX == rookX2 || kingY == rookY2) {
         count += 2
     }
     return count
@@ -147,10 +147,10 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int {
     var count = 0
-    if ((kingX == rookX) || (kingY == rookY)) {
+    if (kingX == rookX || kingY == rookY) {
         count += 1
     }
-    if (kotlin.math.abs(kingX - bishopX) == (kotlin.math.abs(kingY - bishopY))) {
+    if (abs(kingX - bishopX) == (abs(kingY - bishopY))) {
         count += 2
     }
     return count
@@ -184,30 +184,29 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if ((a == b) || (c == d)) return -1
-    else return when {
-        (b < d) -> {
-            if (c > b) return -1
-            else if (c == b) return 0
-            else {
-                if (c >= a) return b - c
-                else return b - a
+    return when {
+        ((a == b) || (c == d)) -> -1
+        (b < d) -> when {
+            (c > b) -> -1
+            (c == b) -> 0
+            else -> when {
+                (c >= a) -> b - c
+                else -> b - a
             }
         }
-
-        (b == d) -> {
-            if (c >= a) return d - c
-            else return d - a
+        (b == d) -> when {
+            (c >= a) -> d - c
+            else -> d - a
         }
-
-        else -> {
-            if (a > d) return -1
-            else if (a == d) return 0
-            else {
-                if (a >= c) return d - a
-                else return d - c
+        else -> when {
+            (a > d) -> -1
+            (a == d) -> 0
+            else -> when {
+                (a >= c) -> d - a
+                else -> d - c
             }
         }
     }
 }
+
 
