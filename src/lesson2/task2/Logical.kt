@@ -59,11 +59,8 @@ fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
 ): Boolean {
-    val centersDistance = sqrt(sqr(x1 - x2) + sqr(y1 - y2))
-    return when {
-        centersDistance <= r1 -> (r1 + centersDistance) <= r2
-        else -> (2 * r1 + centersDistance) <= r2
-    }
+    val centersDistance = sqrt((x1 - x2).pow(2) + (y1 - y2).pow(2))
+    return (r1 + centersDistance) <= r2
 }
 
 /**
