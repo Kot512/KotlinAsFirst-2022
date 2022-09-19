@@ -20,7 +20,7 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
 fun isNumberHappy(number: Int): Boolean =
-    ((number / 1000) + ((number / 100) % 10)) == ((number % 10) + ((number / 10) % 10))
+    number / 1000 + number / 100 % 10 == number % 10 + number / 10 % 10
 
 /**
  * Простая (2 балла)
@@ -31,7 +31,7 @@ fun isNumberHappy(number: Int): Boolean =
  */
 
 fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
-    ((x1 == x2) || (y1 == y2) || (abs(x1 - x2) == abs(y1 - y2)))
+    x1 == x2 || y1 == y2 || abs(x1 - x2) == abs(y1 - y2)
 
 
 /**
@@ -40,13 +40,12 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
  * Дан номер месяца (от 1 до 12 включительно) и год (положительный).
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
-fun daysInMonth(month: Int, year: Int): Int {
-    return when {
+fun daysInMonth(month: Int, year: Int): Int =
+    when {
         (month == 4) || (month == 6) || (month == 9) || (month == 11) -> 30
         month == 2 -> if ((year != 1900) && (year % 4 == 0)) 29 else 28
         else -> 31
     }
-}
 
 /**
  * Простая (2 балла)
@@ -60,7 +59,7 @@ fun circleInside(
     x2: Double, y2: Double, r2: Double
 ): Boolean {
     val centersDistance = sqrt((x1 - x2).pow(2) + (y1 - y2).pow(2))
-    return (r1 + centersDistance) <= r2
+    return r1 + centersDistance <= r2
 }
 
 /**
@@ -72,11 +71,11 @@ fun circleInside(
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean =
     when {
-        (a <= r && b <= s) || (a <= s && b <= r) -> return true
-        (a <= r && c <= s) || (a <= s && c <= r) -> return true
-        (b <= r && c <= s) || (b <= s && c <= r) -> return true
-        else -> return false
+        (a <= r && b <= s) || (a <= s && b <= r) -> true
+        (a <= r && c <= s) || (a <= s && c <= r) -> true
+        (b <= r && c <= s) || (b <= s && c <= r) -> true
+        else -> false
     }
-}
+
