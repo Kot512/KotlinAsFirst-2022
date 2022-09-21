@@ -2,7 +2,7 @@
 
 package lesson3.task1
 
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -72,7 +72,15 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var count = 0
+    var number = n
+    do {
+        count += 1
+        number /= 10
+    } while (number > 0)
+    return count
+}
 
 /**
  * Простая (2 балла)
@@ -80,21 +88,35 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int =
+    when {
+        n == 1 || n == 2 -> 1
+        else -> fib(n - 1) + fib(n - 2)
+    }
+
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
-
+fun minDivisor(n: Int): Int {
+    for (i in 2..n / 2) {
+        if (n % i == 0) return i
+    }
+    return n
+}
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    for (i in n / 2 downTo 2) {
+        if (n % i == 0) return i
+    }
+    return 1
+}
 
 /**
  * Простая (2 балла)
@@ -112,7 +134,21 @@ fun maxDivisor(n: Int): Int = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var stepCount = 0
+    var x1 = x
+    while (x1 > 1) {
+        if (x1 % 2 == 0) {
+            x1 /= 2
+            stepCount += 1
+        }
+        else {
+            x1 = x1 * 3 + 1
+            stepCount += 1
+        }
+    }
+    return stepCount
+}
 
 /**
  * Средняя (3 балла)
@@ -120,8 +156,19 @@ fun collatzSteps(x: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
-
+fun lcm(m: Int, n: Int): Int {
+    var flag = 0
+    var k = min(m, n)
+    while (flag == 0) {
+        if (k % m == 0 && k % n == 0) {
+            return k
+            flag += 1
+        } else {
+            k += 1
+        }
+    }
+    return 0
+}
 /**
  * Средняя (3 балла)
  *
@@ -129,7 +176,14 @@ fun lcm(m: Int, n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+    var divider = 2
+    for (i in 1..min(m, n)) {
+        if (m % divider == 0 && n % divider == 0) return false
+        else divider += 1
+    }
+    return true
+}
 
 /**
  * Средняя (3 балла)
@@ -138,7 +192,23 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var dividerCount = 1
+    var oldN = n
+    var newN = 0
+
+    while (oldN > 10) {
+        oldN /= 10
+        dividerCount *= 10
+    }
+    oldN = n
+    while (dividerCount > 0) {
+        newN += oldN % 10 * dividerCount
+        oldN /= 10
+        dividerCount /= 10
+    }
+    return newN
+}
 
 /**
  * Средняя (3 балла)
@@ -149,7 +219,21 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    var count = 0
+    var usableN = n
+    while (usableN > 10) {
+        usableN /= 10
+        count += 1
+    }
+    usableN = n
+    while (usableN > 10) {
+        if (usableN % 10 == usableN / 10.0.pow(count).toInt())
+            return isPalindrome(usableN % 10.0.pow(count).toInt() / 10)
+        else return false
+    }
+    return true
+}
 
 /**
  * Средняя (3 балла)
