@@ -243,7 +243,15 @@ fun isPalindrome(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var usableN = n
+    while (usableN > 9) {
+        if (usableN % 10 != usableN / 10 % 10) return true
+        usableN /= 10
+    }
+    return false
+}
+
 
 /**
  * Средняя (4 балла)
@@ -254,7 +262,25 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var lastElement = java.lang.Double.MAX_VALUE
+    var summ = 0.0
+    var degree = 1
+    var count = 0
+    var usableX = x
+
+    if (usableX % (2 * PI) < 1e-5) usableX = 2.0 * PI
+    else if (usableX % PI < 1e-5) usableX = PI
+    else usableX = x
+
+    while (lastElement >= eps) {
+        lastElement = usableX.pow(degree) / factorial(degree)
+        summ += lastElement * (-1.0).pow(count)
+        count += 1
+        degree += 2
+    }
+    return summ
+}
 
 /**
  * Средняя (4 балла)
@@ -265,7 +291,27 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+
+
+fun cos(x: Double, eps: Double): Double {
+    var lastElement = java.lang.Double.MAX_VALUE
+    var summ = 0.0
+    var degree = 0
+    var count = 0
+    var usableX = x
+
+    if (usableX % (2 * PI) < 1e-5) usableX = 2.0 * PI
+    else if (usableX % PI < 1e-5) usableX = PI
+    else usableX = x
+
+    while (lastElement >= eps) {
+        lastElement = usableX.pow(degree) / factorial(degree)
+        summ += lastElement * (-1.0).pow(count)
+        count += 1
+        degree += 2
+    }
+    return summ
+}
 
 /**
  * Сложная (4 балла)
@@ -276,7 +322,8 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+
 
 /**
  * Сложная (5 баллов)
