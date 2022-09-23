@@ -89,8 +89,8 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int =
-    when {
-        n == 1 || n == 2 -> 1
+    when (n) {
+        1, 2 -> 1
         else -> fib(n - 1) + fib(n - 2)
     }
 
@@ -163,7 +163,8 @@ fun lcm(m: Int, n: Int): Int {
         if (k % m == 0 && k % n == 0) {
             return k
             flag += 1
-        } else {
+        }
+        else {
             k += 1
         }
     }
@@ -228,9 +229,9 @@ fun isPalindrome(n: Int): Boolean {
     }
     usableN = n
     while (usableN > 10) {
-        if (usableN % 10 == usableN / 10.0.pow(count).toInt())
-            return isPalindrome(usableN % 10.0.pow(count).toInt() / 10)
-        else return false
+        return if (usableN % 10 == usableN / 10.0.pow(count).toInt())
+            isPalindrome(usableN % 10.0.pow(count).toInt() / 10)
+        else false
     }
     return true
 }
@@ -269,9 +270,9 @@ fun sin(x: Double, eps: Double): Double {
     var count = 0
     var usableX = x
 
-    if (usableX % (2 * PI) < 1e-5) usableX = 2.0 * PI
-    else if (usableX % PI < 1e-5) usableX = PI
-    else usableX = x
+    usableX = if (usableX % (2 * PI) < 1e-5) 2.0 * PI
+    else if (usableX % PI < 1e-5) PI
+    else x
 
     while (lastElement >= eps) {
         lastElement = usableX.pow(degree) / factorial(degree)
@@ -300,9 +301,9 @@ fun cos(x: Double, eps: Double): Double {
     var count = 0
     var usableX = x
 
-    if (usableX % (2 * PI) < 1e-5) usableX = 2.0 * PI
-    else if (usableX % PI < 1e-5) usableX = PI
-    else usableX = x
+    usableX = if (usableX % (2 * PI) < 1e-5) 2.0 * PI
+    else if (usableX % PI < 1e-5) PI
+    else x
 
     while (lastElement >= eps) {
         lastElement = usableX.pow(degree) / factorial(degree)
@@ -322,8 +323,31 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int {
+fun digitsAmount(n: Int): Int {
+    var usableN = n
+    var count = 0
+    while (usableN > 0) {
+        usableN /= 10
+        count += 1
+    }
+    return count
+}
 
+fun squareSequenceDigit(n: Int): Int {
+    var currentN = 0
+    for (number in 1..Int.MAX_VALUE) {
+        var sqrNum = number * number
+        var digitAmount = digitsAmount(sqrNum)
+        while (digitAmount > 0) {
+            currentN += 1
+            digitAmount -= 1
+            if (currentN == n)
+                return sqrNum / 10.0.pow(digitAmount).toInt()
+            sqrNum %= 10.0.pow(digitAmount).toInt()
+        }
+    }
+    return 0
+}
 
 /**
  * Сложная (5 баллов)
@@ -334,4 +358,18 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var currentN = 0
+    for (number in 1..Int.MAX_VALUE) {
+        var fibNum = fib(number)
+        var digitAmount = digitsAmount(fibNum)
+        while (digitAmount > 0) {
+            currentN += 1
+            digitAmount -= 1
+            if (currentN == n)
+                return fibNum / 10.0.pow(digitAmount).toInt()
+            fibNum %= 10.0.pow(digitAmount).toInt()
+        }
+    }
+    return 0
+}
