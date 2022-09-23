@@ -88,12 +88,18 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int =
-    when (n) {
-        1, 2 -> 1
-        else -> fib(n - 1) + fib(n - 2)
+fun fib(n: Int): Int {
+    var f3 = 1
+    var f2 = 1
+    var f1 = 0
+    if (n < 2) return 1
+    else for (i in 3..n) {
+        f1 = f3 + f2
+        f3 = f2
+        f2 = f1
     }
-
+    return f2
+}
 
 /**
  * Простая (2 балла)
@@ -159,13 +165,9 @@ fun collatzSteps(x: Int): Int {
 fun lcm(m: Int, n: Int): Int {
     var flag = 0
     var k = min(m, n)
-    while (flag == 0) {
-        if (k % m == 0 && k % n == 0) {
-            return k
-            flag += 1
-        }
-        else {
-            k += 1
+    for (i in k..Int.MAX_VALUE) {
+        if (i % m == 0 && i % n == 0) {
+            return i
         }
     }
     return 0
@@ -220,17 +222,35 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var count = 0
+fun digitsAmount(n: Int): Int {
     var usableN = n
-    while (usableN > 10) {
+    var count = 0
+    while (usableN > 0) {
         usableN /= 10
         count += 1
     }
-    usableN = n
+    return count
+}
+
+fun zeroChanger(n: Int): Int {
+    var usableN = n
+    var step = 1
+    var newN = 0
+    while (usableN > 0) {
+        newN += if (n % 10 == 0)
+            1 * step
+        else usableN % 10 * step
+        step *= 10
+        usableN /= 10
+    }
+    return newN
+}
+fun isPalindrome(n: Int): Boolean {
+    var count = digitsAmount(n)
+    var usableN = zeroChanger(n)
     while (usableN > 10) {
-        return if (usableN % 10 == usableN / 10.0.pow(count).toInt())
-            isPalindrome(usableN % 10.0.pow(count).toInt() / 10)
+        return if (usableN % 10 == usableN / 10.0.pow(count - 1).toInt())
+            isPalindrome(usableN % 10.0.pow(count - 1).toInt() / 10)
         else false
     }
     return true
@@ -323,15 +343,7 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitsAmount(n: Int): Int {
-    var usableN = n
-    var count = 0
-    while (usableN > 0) {
-        usableN /= 10
-        count += 1
-    }
-    return count
-}
+
 
 fun squareSequenceDigit(n: Int): Int {
     var currentN = 0
