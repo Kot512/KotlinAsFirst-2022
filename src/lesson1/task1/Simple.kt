@@ -65,7 +65,8 @@ fun main() {
  * Пользователь задает время в часах, минутах и секундах, например, 8:20:35.
  * Рассчитать время в секундах, прошедшее с начала суток (30035 в данном случае).
  */
-fun seconds(hours: Int, minutes: Int, seconds: Int): Int = hours * 3600 + minutes * 60 + seconds
+fun seconds(hours: Int, minutes: Int, seconds: Int): Int =
+    hours * 3600 + minutes * 60 + seconds
 
 /**
  * Тривиальная (1 балл)
@@ -81,7 +82,8 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
  * Пользователь задает угол в градусах, минутах и секундах (например, 36 градусов 14 минут 35 секунд).
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
-fun angleInRadian(deg: Int, min: Int, sec: Int): Double = Math.toRadians(deg + sec / 3600.0 + min / 60.0)
+fun angleInRadian(deg: Int, min: Int, sec: Int): Double =
+    Math.toRadians(deg + sec / 3600.0 + min / 60.0)
 
 /**
  * Тривиальная (1 балл)
@@ -118,7 +120,8 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Сколько денег будет на счету через 3 года (с учётом сложных процентов)?
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
-fun accountInThreeYears(initial: Int, percent: Int): Double = initial * (1 + percent.toDouble() / 100).pow(3)
+fun accountInThreeYears(initial: Int, percent: Int): Double =
+    initial * (1 + percent.toDouble() / 100).pow(3)
 
 /**
  * Простая (2 балла)
@@ -126,4 +129,5 @@ fun accountInThreeYears(initial: Int, percent: Int): Double = initial * (1 + per
  * Пользователь задает целое трехзначное число (например, 478).
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
-fun numberRevert(number: Int): Int = (number % 10) * 100 + ((number / 10) % 10) * 10 + number / 100
+fun numberRevert(number: Int): Int =
+    (number % 10) * 100 + ((number / 10) % 10) * 10 + number / 100
