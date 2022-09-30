@@ -107,7 +107,7 @@ fun fib(n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    for (i in 2..n / 2) {
+    for (i in 2..sqrt(n.toDouble()).toInt()) {
         if (n % i == 0) return i
     }
     return n
@@ -147,8 +147,7 @@ fun collatzSteps(x: Int): Int {
         if (x1 % 2 == 0) {
             x1 /= 2
             stepCount += 1
-        }
-        else {
+        } else {
             x1 = x1 * 3 + 1
             stepCount += 1
         }
