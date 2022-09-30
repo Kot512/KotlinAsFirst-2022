@@ -74,7 +74,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var count = 0
-    var number = n
+    var number = abs(n)
     do {
         count += 1
         number /= 10
@@ -162,16 +162,7 @@ fun collatzSteps(x: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    var flag = 0
-    var k = min(m, n)
-    for (i in k..Int.MAX_VALUE) {
-        if (i % m == 0 && i % n == 0) {
-            return i
-        }
-    }
-    return 0
-}
+fun lcm(m: Int, n: Int): Int = TODO()
 /**
  * Средняя (3 балла)
  *
@@ -195,23 +186,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int {
-    var dividerCount = 1
-    var oldN = n
-    var newN = 0
-
-    while (oldN > 10) {
-        oldN /= 10
-        dividerCount *= 10
-    }
-    oldN = n
-    while (dividerCount > 0) {
-        newN += oldN % 10 * dividerCount
-        oldN /= 10
-        dividerCount /= 10
-    }
-    return newN
-}
+fun revert(n: Int): Int = TODO()
 
 /**
  * Средняя (3 балла)
@@ -232,30 +207,7 @@ fun digitsAmount(n: Int): Int {
     return count
 }
 
-fun zeroChanger(n: Int): Int {
-    var usableN = n
-    var step = 1
-    var newN = 0
-    while (usableN > 0) {
-        newN += if (n % 10 == 0)
-            1 * step
-        else usableN % 10 * step
-        step *= 10
-        usableN /= 10
-    }
-    return newN
-}
-fun isPalindrome(n: Int): Boolean {
-    var count = digitsAmount(n)
-    var usableN = zeroChanger(n)
-    while (usableN > 10) {
-        return if (usableN % 10 == usableN / 10.0.pow(count - 1).toInt())
-            isPalindrome(usableN % 10.0.pow(count - 1).toInt() / 10)
-        else false
-    }
-    return true
-}
-
+fun isPalindrome(n: Int): Boolean = TODO()
 /**
  * Средняя (3 балла)
  *
@@ -283,25 +235,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double {
-    var lastElement = java.lang.Double.MAX_VALUE
-    var summ = 0.0
-    var degree = 1
-    var count = 0
-    var usableX = x
-
-    usableX = if (usableX % (2 * PI) < 1e-5) 2.0 * PI
-    else if (usableX % PI < 1e-5) PI
-    else x
-
-    while (lastElement >= eps) {
-        lastElement = usableX.pow(degree) / factorial(degree)
-        summ += lastElement * (-1.0).pow(count)
-        count += 1
-        degree += 2
-    }
-    return summ
-}
+fun sin(x: Double, eps: Double): Double = TODO()
 
 /**
  * Средняя (4 балла)
@@ -314,25 +248,7 @@ fun sin(x: Double, eps: Double): Double {
  */
 
 
-fun cos(x: Double, eps: Double): Double {
-    var lastElement = java.lang.Double.MAX_VALUE
-    var summ = 0.0
-    var degree = 0
-    var count = 0
-    var usableX = x
-
-    usableX = if (usableX % (2 * PI) < 1e-5) 2.0 * PI
-    else if (usableX % PI < 1e-5) PI
-    else x
-
-    while (lastElement >= eps) {
-        lastElement = usableX.pow(degree) / factorial(degree)
-        summ += lastElement * (-1.0).pow(count)
-        count += 1
-        degree += 2
-    }
-    return summ
-}
+fun cos(x: Double, eps: Double): Double = TODO()
 
 /**
  * Сложная (4 балла)
