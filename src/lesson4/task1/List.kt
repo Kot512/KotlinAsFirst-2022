@@ -3,7 +3,8 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
-import kotlin.math.sqrt
+import kotlin.math.*
+
 
 // Урок 4: списки
 // Максимальное количество баллов = 12
@@ -241,7 +242,32 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+
+fun romanTransformer(n: Int): String {
+    return when (n) {
+        in 1..3 -> "I".repeat(n)
+        4 -> "IV"
+        in 5..8 -> "V" + "I".repeat(n - 5)
+        9 -> "IX"
+        in 10..30 -> "X".repeat(n / 10)
+        40 -> "XL"
+        in 50..80 -> "L"+ "X" .repeat((n - 50) / 10)
+        90 -> "XC"
+        in 100..300 -> "C".repeat(n / 100)
+        400 -> "CD"
+        in 500..800 -> "D" + "C".repeat((n - 500) / 100)
+        900 -> "CM"
+        in 1000..3000 -> "M".repeat(n / 1000)
+        else -> ""
+    }
+}
+
+fun roman(n: Int): String {
+    val ranksOfN = n.toString().map { it.digitToInt() }.toMutableList()
+    for (i in 0 until ranksOfN.size)
+        ranksOfN[i] *= 10.0.pow(ranksOfN.size - i - 1).toInt()
+    return ranksOfN.fold("") { s, el -> s + romanTransformer(el) }
+}
 
 /**
  * Очень сложная (7 баллов)
@@ -250,4 +276,86 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun body(l:List<Char>, k: Int): String {
+    var num = ""
+    for (i in 0 until l.size) {
+        val uN =
+            l[i].digitToInt() * 10.0.pow(l.size - 1 - i).toInt()
+        num += when (uN) {
+            1 -> if (k == 1) "одна "
+            else "один "
+
+            2 -> if (k == 1) "две "
+            else "два "
+
+            3 -> "три "
+            4 -> "четыре "
+            5 -> "пять "
+            6 -> "шесть "
+            7 -> "семь "
+            8 -> "восемь "
+            9 -> "девять "
+            10 -> "десять "
+            20 -> "двадцать "
+            30 -> "тридцать "
+            40 -> "сорок "
+            50 -> "пятьдесят "
+            60 -> "шестьдесят "
+            70 -> "семьдесят "
+            80 -> "восемьдесят "
+            90 -> "девяносто "
+            100 -> "сто "
+            200 -> "двести "
+            300 -> "триста "
+            400 -> "четыреста "
+            500 -> "пятьсот "
+            600 -> "шестьсот "
+            700 -> "семьсот "
+            800 -> "восемьсот "
+            900 -> "девятьсот "
+            else -> ""
+        }
+    }
+    num = num.replace("десять один", "одиннадцать")
+    num = num.replace("десять два", "двенадцать")
+    num = num.replace("десять три", "тринадцать")
+    num = num.replace("десять четыре", "четырнадцать")
+    num = num.replace("десять пять", "пятнадцать")
+    num = num.replace("десять шесть", "шестнадцать")
+    num = num.replace("десять семь", "семнадцать")
+    num = num.replace("десять восемь", "восемнадцать")
+    num = num.replace("десять девять", "девятнадцать")
+    return num
+}
+
+fun tale(body: String, n:List<Char>): String {
+    val uB = body
+    val uN = n.fold("") { s, el -> s + el} + "000"
+    val zeroAmount = uN.count {it == '0'}
+    if (body == "") return ""
+    return when (zeroAmount){
+        in 0..2 -> ""
+        in 3..5 -> when (uB.substring(uB.length - 3, uB.length)) {
+            "на " -> "тысяча "
+            in listOf("ве ", "ри ", "ре ") -> "тысячи "
+            //in listOf("ть", "мь", "ти", "та", "то", "от", "ят") -> "тысяч"
+            else -> "тысяч "
+
+        }
+
+        else -> ""
+    }
+}
+
+fun russian(n: Int): String {
+    val strN = n.toString().toMutableList()
+    var res = ""
+    val hundreds =
+        if (strN.size >= 3) strN.subList(strN.size - 3, strN.size)
+        else strN
+    val thousands =
+        if (strN.size > 3) strN.subList(0, strN.size - 3)
+        else mutableListOf<Char>()
+    res = body(thousands, 1) + tale(body(thousands, 1), thousands) + body(hundreds, 0)
+    return res.trim()
+}
