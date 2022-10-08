@@ -382,14 +382,13 @@ fun tale(body: String, n:List<Char>): String {
 
 fun russian(n: Int): String {
     val strN = n.toString().toMutableList()
-    var res = ""
     val hundreds =
         if (strN.size >= 3) strN.subList(strN.size - 3, strN.size)
         else strN
     val thousands =
         if (strN.size > 3) strN.subList(0, strN.size - 3)
         else mutableListOf<Char>()
-    res =
+    val res =
         body(thousands, 1) + tale(body(thousands, 1), thousands) + body(hundreds, 0)
     return res.trim()
 }
