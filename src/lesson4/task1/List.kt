@@ -122,7 +122,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * Модуль пустого вектора считать равным 0.0.
  */
 fun abs(v: List<Double>): Double =
-    sqrt(v.map { it * it }.sum())
+    sqrt(v.sumOf { it * it })
 
 /**
  * Простая (2 балла)
@@ -130,7 +130,7 @@ fun abs(v: List<Double>): Double =
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
 fun mean(list: List<Double>): Double =
-    if (list.isNotEmpty()) list.sum() / list.size
+    if (list.isNotEmpty()) /*list.sum() / list.size*/ list.average()
     else 0.0
 
 /**
@@ -309,10 +309,10 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
 fun romanTransformer(n: Int): String {
     val romans= mapOf(1 to "I", 2 to "II", 3 to "III", 4 to "IV",
         5 to "V", 6 to "VI", 7 to "VII", 8 to "VIII", 9 to "IX",
-        10 to "X", 20 to "XX", 30 to "XX", 40 to "XL", 50 to "L",
+        10 to "X", 20 to "XX", 30 to "XXX", 40 to "XL", 50 to "L",
         60 to "LX", 70 to "LXX", 80 to "LXXX", 90 to "XC", 100 to "C",
         200 to "CC", 300 to "CCC", 400 to "CD", 500 to "D", 600 to "DC",
-        700 to "DC", 800 to "DCC", 900 to "CM", 1000 to "M", 2000 to "MM",
+        700 to "DCC", 800 to "DCCC", 900 to "CM", 1000 to "M", 2000 to "MM",
         3000 to "MMM")
     return romans[n] ?: ""
 }
