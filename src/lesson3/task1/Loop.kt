@@ -118,8 +118,8 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    for (i in n / 2 downTo 2) {
-        if (n % i == 0) return i
+    for (i in 2..sqrt(n.toDouble()).toInt()) {
+        if (n % i == 0) return n / i
     }
     return 1
 }
@@ -144,13 +144,9 @@ fun collatzSteps(x: Int): Int {
     var stepCount = 0
     var x1 = x
     while (x1 > 1) {
-        if (x1 % 2 == 0) {
-            x1 /= 2
-            stepCount += 1
-        } else {
-            x1 = x1 * 3 + 1
-            stepCount += 1
-        }
+        stepCount += 1
+        if (x1 % 2 == 0) x1 /= 2
+        else x1 = x1 * 3 + 1
     }
     return stepCount
 }
@@ -169,14 +165,7 @@ fun lcm(m: Int, n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    var divider = 2
-    for (i in 1..min(m, n)) {
-        if (m % divider == 0 && n % divider == 0) return false
-        else divider += 1
-    }
-    return true
-}
+fun isCoPrime(m: Int, n: Int): Boolean = TODO()
 
 /**
  * Средняя (3 балла)
@@ -196,15 +185,6 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitsAmount(n: Int): Int {
-    var usableN = n
-    var count = 0
-    while (usableN > 0) {
-        usableN /= 10
-        count += 1
-    }
-    return count
-}
 
 fun isPalindrome(n: Int): Boolean = TODO()
 /**
@@ -264,7 +244,7 @@ fun squareSequenceDigit(n: Int): Int {
     var currentN = 0
     for (number in 1..Int.MAX_VALUE) {
         var sqrNum = number * number
-        var digitAmount = digitsAmount(sqrNum)
+        var digitAmount = digitNumber(sqrNum)
         while (digitAmount > 0) {
             currentN += 1
             digitAmount -= 1
@@ -289,7 +269,7 @@ fun fibSequenceDigit(n: Int): Int {
     var currentN = 0
     for (number in 1..Int.MAX_VALUE) {
         var fibNum = fib(number)
-        var digitAmount = digitsAmount(fibNum)
+        var digitAmount = digitNumber(fibNum)
         while (digitAmount > 0) {
             currentN += 1
             digitAmount -= 1
