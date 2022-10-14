@@ -309,8 +309,8 @@ class Tests {
             findSumOfTwo(emptyList(), 1)
         )
         assertEquals(
-            Pair(0, 2),
-            findSumOfTwo(listOf(1, 2, 3), 4)
+            Pair(0, 821),
+            findSumOfTwo((63..99999).toList(), 947)
         )
         assertEquals(
             Pair(-1, -1),
