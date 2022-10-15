@@ -2,6 +2,7 @@
 
 package lesson5.task1
 
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -212,7 +213,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var filteredStuff = stuff.filterValues { it.first == kind }
+    val filteredStuff = stuff.filterValues { it.first == kind }
     var min = Double.MAX_VALUE
     var res: String? = null
     for ((name, pair) in filteredStuff)
@@ -232,8 +233,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-    word.toSet() == chars.toSet()
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
 
 /**
  * Средняя (4 балла)
@@ -334,20 +334,23 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    /*list.forEach {
-        if ((number - it) in list && list.indexOf(it) != list.indexOf(number - it))
-            return Pair(list.indexOf(it), list.indexOf(number - it))
-    }
-    return Pair(-1, -1)
-}*/
-    val map = mutableMapOf<Int, Int>()
-    for (i in list.indices) map[list[i]] = i
-    map.keys.forEach {
-        if (map[number - it] != null && map[number - it] != map[it])
-            return Pair(map[it]!!, map[number - it]!!)
+    /*val map = list.mapIndexed {k, v -> k to v}.toMap()
+        for (i in map) {
+            for (k in map)
+                if (k.key != i.key && i.value + k.value == number)
+                    return Pair(i.key, k.key)
+        }
+        return Pair(-1, -1)
+    }*/
+
+    for ((i1, el1) in list.withIndex()) {
+        for ((i2, el2) in list.withIndex())
+            if (i1 != i2 && el1 + el2 == number)
+                return Pair(i1, i2)
     }
     return Pair(-1, -1)
 }
+
 
 /**
  * Очень сложная (8 баллов)
@@ -372,14 +375,14 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     var currentCapacity = capacity
-    var revTreas =
-        treasures.entries.associateBy({ it.value }, {it.key}).toMutableMap()
-    var sortedList =
-        revTreas.keys.sortedWith(compareBy({-it.second}, {it.first}))
+    val priorityList =
+        treasures.values.sortedWith(compareBy({-it.second}, {it.first}))
+    val backpack = treasures.toMutableMap()
 
-    for (i in sortedList) {
-        if (currentCapacity - i.first < 0) revTreas.remove(i)
+    for (i in priorityList) {
+        if (currentCapacity - i.first < 0)
+            backpack -= (treasures.filterValues { it == i }.keys)
         else currentCapacity -= i.first
     }
-    return revTreas.values.toSet()
+    return backpack.keys
 }

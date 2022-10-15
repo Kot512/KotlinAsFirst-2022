@@ -309,8 +309,8 @@ class Tests {
             findSumOfTwo(emptyList(), 1)
         )
         assertEquals(
-            Pair(0, 821),
-            findSumOfTwo((63..99999).toList(), 947)
+            Pair(0, 1),
+            findSumOfTwo(listOf(0, 0), 0)
         )
         assertEquals(
             Pair(-1, -1),
@@ -329,10 +329,10 @@ class Tests {
             )
         )
         assertEquals(
-            emptySet<String>(),
+            setOf("1", "0"),
             bagPacking(
-                mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
-                450
+                mapOf("0" to (1 to 1), "1" to (1 to 1)),
+                2
             )
         )
     }
