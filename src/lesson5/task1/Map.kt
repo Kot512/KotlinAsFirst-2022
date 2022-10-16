@@ -399,17 +399,17 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val backpack2 = treasures.toMutableMap()
     var currentPrice2 = 0
 
-    println()
-
-    for (i in priorityList1) {
+    //заполнение рюкзака, начиная с самого ценного сокровища
+    /*for (i in priorityList1) {
         if (currentCapacity1 - i.first < 0)
             backpack1 -= (backpack1.filterValues { it == i }.keys.last())
         else {
             currentCapacity1 -= i.first
             currentPrice1 += i.second
         }
-    }
+    }*/
 
+    //заполнение рюкзака, начиная с самого дешевого сокровища
     for (i in priorityList2) {
         if (currentCapacity2 - i.first < 0)
             backpack2 -= (backpack2.filterValues { it == i }.keys.last())
