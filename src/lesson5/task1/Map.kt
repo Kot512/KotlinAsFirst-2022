@@ -387,28 +387,12 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     return backpack.keys
 }*/
 
-    var currentCapacity1 = capacity
-    val priorityList1 =
-        treasures.values.sortedWith(compareBy({ -it.second }, { it.first }))
-    val backpack1 = treasures.toMutableMap()
-    var currentPrice1 = 0
-
-
     var currentCapacity2 = capacity
     val priorityList2 =
         treasures.values.sortedWith(compareBy({ -it.second * 1.0 / it.first }, { it.first }))
     val backpack2 = treasures.toMutableMap()
     var currentPrice2 = 0
 
-
-    for (i in priorityList1) {
-        if (currentCapacity1 - i.first < 0)
-            backpack1 -= (backpack1.filterValues { it == i }.keys.last())
-        else {
-            currentCapacity1 -= i.first
-            currentPrice1 += i.second
-        }
-    }
 
     for (i in priorityList2) {
         if (currentCapacity2 - i.first < 0)
@@ -418,6 +402,5 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             currentPrice2 += i.second
         }
     }
-    return if (currentPrice2 > currentPrice1) backpack2.keys
-    else backpack1.keys
+    return backpack2.keys
 }
