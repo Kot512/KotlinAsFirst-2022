@@ -381,7 +381,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
 
     for (i in priorityList) {
         if (currentCapacity - i.first < 0)
-            backpack -= (treasures.filterValues { it == i }.keys)
+            backpack -= (treasures.filterValues { it == i }.keys.last())
         else currentCapacity -= i.first
     }
     return backpack.keys
