@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
 
 package lesson6.task1
+import kotlin.math.*
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -74,7 +75,34 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val monthDefiner = mapOf(
+        "января" to 1, "февраля" to 2, "марта" to 3,
+        "апреля" to 4, "мая" to 5, "июня" to 6, "июля" to 7,
+        "августа" to 8, "сентярбря" to 9, "октября" to 10,
+        "ноября" to 11, "декабря" to 12
+    )
+    val str2 = str.split(" ")
+
+    return when {
+        str2.size < 3 -> ""
+        monthDefiner[str2[1]] == null -> ""
+        monthDefiner[str2[1]]!! in setOf(4, 6, 9, 11)
+                && str2[0].toInt() == 31
+        -> ""
+
+        monthDefiner[str2[1]]!! == 2 &&
+                (str2[2].toInt() % 4 == 0 && str2[0].toInt() > 29 ||
+                        str2[2].toInt() % 4 != 0 && str2[0].toInt() > 28 ||
+                        str2[2].toInt() % 400 == 0 && str2[0] != "28")
+        -> ""
+
+        else
+        -> String.format(
+            "%02d.%02d.%04d", str2[0].toInt(), monthDefiner[str2[1]]!!, str2[2].toInt()
+        )
+    }
+}
 
 /**
  * Средняя (4 балла)
@@ -149,7 +177,11 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    val criteria = Regex("""([а-яА-я]+)\s\1""")
+    return if (criteria.find(str.uppercase()) == null) -1
+    else criteria.find(str.uppercase())!!.range.toList()[0]
+}
 
 /**
  * Сложная (6 баллов)
@@ -162,7 +194,18 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    val criteria = Regex("""([а-яА-я]+\D)\s(\d+\.\d+)""")
+    description.split("; ").forEach { if (!it.matches(criteria)) return ""}
+
+    val positions =
+        description.split("; ").associate {
+            it.split(" ")[1].toDouble() to it.split(" ")[0]
+        }
+    return (positions[positions.keys.max()] ?: "")
+}
+
+
 
 /**
  * Сложная (6 баллов)
