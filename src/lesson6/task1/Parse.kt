@@ -99,7 +99,7 @@ fun dateStrToDigit(str: String): String {
 
         else
         -> String.format(
-            "%02d.%02d.%4d", str2[0].toInt(), monthDefiner[str2[1]]!!, str2[2].toInt()
+            "%02d.%02d.%d", str2[0].toInt(), monthDefiner[str2[1]]!!, str2[2].toInt()
         )
     }
 }
@@ -178,7 +178,7 @@ fun plusMinus(expression: String): Int = TODO()
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    val criteria = Regex("""([а-яА-я]+|\w+)\s\1""")
+    val criteria = Regex("""([а-яА-Я]+|\w+|\W+)\s\1""")
     return if (criteria.find(str.uppercase()) == null) -1
     else criteria.find(str.uppercase())!!.range.toList()[0]
 }
@@ -195,14 +195,18 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше нуля либо равны нулю.
  */
 fun mostExpensive(description: String): String {
-    val criteria = Regex("""([а-яА-я]+\D)\s(\d+\.\d+|\d+)""")
+    val criteria = Regex("""([а-яА-Я]+|\D+)\s(\d+\.\d+|\d+)""")
     description.split("; ").forEach { if (!it.matches(criteria)) return ""}
 
     val positions =
         description.split("; ").associate {
-            it.split(" ")[1].toDouble() to it.split(" ")[0]
+            it.split(" ")[0] to it.split(" ")[1].toDouble()
         }
-    return (positions[positions.keys.max()] ?: "")
+    val maxPrice = positions.values.max()
+    return when (positions.filterValues { it == maxPrice }.size) {
+        1 -> positions.filterValues { it == maxPrice }.keys.first()
+        else -> "Any good with price $maxPrice"
+    }
 }
 
 
