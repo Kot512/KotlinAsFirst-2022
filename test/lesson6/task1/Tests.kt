@@ -114,7 +114,7 @@ class Tests {
     fun mostExpensive() {
         assertEquals("", mostExpensive(""))
         assertEquals("Курица", mostExpensive("Хлеб 39.9; Молоко 62.5; Курица 184.0; Конфеты 89.9"))
-        assertEquals("Any good with price 0.0", mostExpensive("7 0; 6 0"))
+        assertEquals("f", mostExpensive("a 21474836.47; f 21474836.47"))
         assertEquals("", mostExpensive("Хлеб 39.9 Молоко 62.5; Курица 184.0; Конфеты 89.9"))
         assertEquals("", mostExpensive("Хлеб 39.9; Молоко 62.5; Курица 184.0; Конфеты"))
         assertEquals("Вино", mostExpensive("Вино 255.0"))

@@ -173,13 +173,9 @@ fun mostExpensive(description: String): String {
 
     val positions =
         description.split("; ").associate {
-            it.split(" ")[0] to it.split(" ")[1].toDouble()
+            it.split(" ")[1].toDouble() to it.split(" ")[0]
         }
-    val maxPrice = positions.values.max()
-    return when (positions.filterValues { it == maxPrice }.size) {
-        1 -> positions.filterValues { it == maxPrice }.keys.first()
-        else -> "Any good with price $maxPrice"
-    }
+    return positions[positions.keys.max()]!!
 }
 
 
