@@ -554,7 +554,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         digitsUsed += 1
     }
 
-    ///вписываем частное во 2-й строке
+    ///вписываем частное во 2-ю строку
     newLine = resList[1]
     repeat(resList.first().indexOf('|') - newLine.length + 2) {
         newLine += " "
@@ -563,8 +563,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     resList[1] = newLine
     ///=======================================
 
+    ///убираем лишние пробелы спереди=================
     if (resList[1].first() == ' ')
-        resList = resList.map { it.trim() }.toMutableList()
+        resList = resList.map { it.substring(1, it.length) }.toMutableList()
+    ///=======================================
 
     File(outputName).bufferedWriter().use { output ->
         resList.forEach {
