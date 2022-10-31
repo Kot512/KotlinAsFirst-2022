@@ -537,7 +537,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
                 if (digitsUsed < lhv.toString().length) lhv.toString()[digitsUsed]
                 else ""
 
-        if (digitsUsed < lhv.toString().length) spacesAmount += 1
+        spacesAmount = newLine.length
         currentDividend = ("${currentDividend - subtrahend}" +
                 if (digitsUsed < lhv.toString().length) lhv.toString()[digitsUsed]
                 else "").toInt()
