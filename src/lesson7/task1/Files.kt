@@ -513,9 +513,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         repeat(spacesAmount - 1 - subtrahend.toString().length) {
             newLine += " "
         }
-        if (quotient == 0)
+        /*if (quotient == 0)
             newLine = "-0"
-        else newLine += "-$subtrahend"
+        else newLine += "-$subtrahend"*/
+        newLine += "-$subtrahend"
 
         spacesAmount = newLine.length
 
