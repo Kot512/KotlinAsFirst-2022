@@ -337,11 +337,12 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             var line = it
 
             when {
-                line.trim().isEmpty() -> {
+                line.isEmpty() -> {
                     if (!emptyInRow) {
                         output.write("</p><p>")
                         emptyInRow = true
                     } else output.write("")
+                    output.write("")
                 }
 
                 else -> {
@@ -375,7 +376,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 }
             }
         }
-        output.write("</p></body></html>")
+        output.write("</body></html></p>")
     }
 }
 
