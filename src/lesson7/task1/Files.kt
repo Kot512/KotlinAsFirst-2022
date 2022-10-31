@@ -497,7 +497,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var digitsUsed = currentDividend.toString().length
     val quotient = lhv / rhv
 
-    val resList = mutableListOf(" $lhv | $rhv")
+    var resList = mutableListOf(" $lhv | $rhv")
     var newLine = ""
     var spacesAmount = currentDividend.toString().length + 1
     var dashLength = currentDividend.toString().length
@@ -562,6 +562,9 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     newLine += "$quotient"
     resList[1] = newLine
     ///=======================================
+
+    if (resList[1].first() == ' ')
+        resList = resList.map { it.trim() }.toMutableList()
 
     File(outputName).bufferedWriter().use { output ->
         resList.forEach {
