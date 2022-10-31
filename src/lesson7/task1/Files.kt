@@ -345,6 +345,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                     output.write("")
                 }
 
+                line.matches(Regex("""\t+""")) ->
+                    output.write("</p><p>")
+
                 else -> {
                     emptyInRow = false
 
