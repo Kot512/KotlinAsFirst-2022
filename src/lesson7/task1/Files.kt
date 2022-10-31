@@ -4,6 +4,7 @@ package lesson7.task1
 
 import java.io.File
 import kotlin.math.max
+import kotlin.math.min
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -498,7 +499,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
     val resList = mutableListOf(" $lhv | $rhv")
     var newLine = ""
-    var spacesAmount = 1
+    var spacesAmount = currentDividend.toString().length + 1
     var dashLength = currentDividend.toString().length
 
 
@@ -512,8 +513,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         repeat(spacesAmount - 1 - subtrahend.toString().length) {
             newLine += " "
         }
+        if (quotient == 0)
+            newLine = "-0"
+        else newLine += "-$subtrahend"
 
-        newLine += "-$subtrahend"
         spacesAmount = newLine.length
 
         resList += newLine
