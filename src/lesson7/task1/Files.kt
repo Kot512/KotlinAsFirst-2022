@@ -63,7 +63,12 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
+    File(outputName).bufferedWriter().use { output ->
+        File(inputName).forEachLine { input ->
+            if (input == "" || input[0] != '_')
+                output.write(input).also { output.newLine() }
+        }
+    }
 }
 
 /**
@@ -75,7 +80,23 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val countMap = mutableMapOf<String, Int>()
+    substrings.forEach { string ->
+        var count = 0
+        File(inputName).forEachLine { line ->
+            for (i in 0..line.length - string.length)
+                if (
+                    string.uppercase() in line.uppercase() &&
+                    line.substring(i, i + string.length).uppercase()
+                    == string.uppercase()
+                ) count++
+        }
+        countMap[string] = count
+    }
+    return countMap
+}
+
 
 
 /**
@@ -92,7 +113,27 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val corrections =
+        mapOf(
+            'ы' to 'и', 'ю' to 'у', 'я' to 'а',
+            'Ы' to 'И', 'Ю' to 'У', 'Я' to 'А'
+        )
+
+    File(outputName).bufferedWriter().use { output ->
+        File(inputName).forEachLine {
+            var line = it
+            for (i in 0 until line.length - 1) {
+                if (line.substring(i, i + 2).matches(Regex("""[жчшщЖЧШЩ][яюыЯЮЫ]"""))) {
+                    corrections.forEach { (w, r) ->
+                        if (line[i + 1] == w)
+                            line = line.substring(0, i + 1) + r +
+                                    line.substring(i + 2, line.length)
+                    }
+                }
+            }
+            output.write(line).also { output.newLine() }
+        }
+    }
 }
 
 /**
@@ -449,6 +490,78 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    var currentDividend = lhv
+    while (currentDividend / 10 / rhv >= 1) currentDividend /= 10
+    var digitsUsed = currentDividend.toString().length
+    val quotient = lhv / rhv
+
+    val resList = mutableListOf(" $lhv | $rhv")
+    var newLine = ""
+    var spacesAmount = 1
+
+
+    for (i in quotient.toString().indices) {
+        val dividerDigit = quotient.toString()[i].digitToInt()
+        val subtrahend = dividerDigit * rhv
+
+
+        ///пишем вычитаемое==================
+        newLine = ""
+        repeat(spacesAmount - 1 - subtrahend.toString().length) {
+            newLine += " "
+        }
+
+        newLine += "-$subtrahend"
+        spacesAmount = newLine.length
+
+        resList += newLine
+        ///=================================
+
+        ///чертим линию под вычитаемым======
+        val substractionResultLength = newLine.trim().length
+        newLine = ""
+        repeat(spacesAmount - substractionResultLength) { newLine += " " }
+        repeat(substractionResultLength) { newLine += "-" }
+
+        spacesAmount = newLine.length
+
+        resList += newLine
+        ///==================================
+
+        ///пишем частное под линией==========
+        newLine = ""
+        repeat(spacesAmount - (currentDividend - subtrahend).toString().length) {
+            newLine += " "
+        }
+        newLine += "${currentDividend - subtrahend}" +
+                if (digitsUsed < lhv.toString().length) lhv.toString()[digitsUsed]
+                else ""
+
+        spacesAmount += 1
+        currentDividend = ("${currentDividend - subtrahend}" +
+                if (digitsUsed < lhv.toString().length) lhv.toString()[digitsUsed]
+                else "").toInt()
+
+        resList += newLine
+        ///==================================
+
+        digitsUsed += 1
+    }
+
+    ///вписываем частное во 2-й строке
+    newLine = resList[1]
+    repeat(resList.first().indexOf('|') - newLine.length + 2) {
+        newLine += " "
+    }
+    newLine += "$quotient"
+    resList[1] = newLine
+    ///=======================================
+
+    File(outputName).bufferedWriter().use { output ->
+        resList.forEach {
+            output.write(it)
+            output.newLine()
+        }
+    }
 }
 

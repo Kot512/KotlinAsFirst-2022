@@ -176,7 +176,7 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
         mapB.filterKeys { it in mapA && mapA[it] != mapB[it] }
     val mapAB = (mapB + mapA).toMutableMap()
     unVals.forEach { (name, number) -> mapAB[name] += ", $number" }
-    return mapAB.toMap()
+    return mapAB
 }
 
 /**
