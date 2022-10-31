@@ -329,7 +329,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var iCount = 0
     var sCount = 0
 
-    var emptyInRow = true
+    var emptyInRow = false
 
     File(outputName).bufferedWriter().use { output ->
         output.write("<html><body><p>")
@@ -337,16 +337,15 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             var line = it
 
             when {
-                line == "" && emptyInRow -> {
-                    output.write("</p><p>")
-                    emptyInRow = false
+                line == "" -> {
+                    if (!emptyInRow) {
+                        output.write("</p><p>")
+                        emptyInRow = true
+                    } else output.write("")
                 }
 
-                line == "" && !emptyInRow ->
-                    output.write("")
-
                 else -> {
-                    emptyInRow = true
+                    emptyInRow = false
 
                     while ("**" in line) {
                         line = line.replaceFirst(
