@@ -325,7 +325,48 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    var bCount = 0 //**
+    var iCount = 0 //*
+    var sCount = 0 //~~
+    //*     приоритет: **, *, ~~
+
+    File(outputName).bufferedWriter().use { output ->
+        output.write("<html><body><p>") //
+        File(inputName).forEachLine {
+            var line = it
+
+            if (line == "")
+                output.write("</p><p>")
+            else {
+                while ("**" in line) {
+                    line = line.replaceFirst(
+                        "**",
+                        if (bCount % 2 == 0) "<b>"
+                        else "</b>"
+                    )
+                    bCount += 1
+                }
+                while ("*" in line) {
+                    line = line.replaceFirst(
+                        "*",
+                        if (iCount % 2 == 0) "<i>"
+                        else "</i>"
+                    )
+                    iCount += 1
+                }
+                while ("~~" in line) {
+                    line = line.replaceFirst(
+                        "~~",
+                        if (sCount % 2 == 0) "<s>"
+                        else "</s>"
+                    )
+                    sCount += 1
+                }
+                output.write(line)
+            }
+        }
+        output.write("</p></body></html>") //
+    }
 }
 
 /**
@@ -513,9 +554,6 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         repeat(spacesAmount - 1 - subtrahend.toString().length) {
             newLine += " "
         }
-        /*if (quotient == 0)
-            newLine = "-0"
-        else newLine += "-$subtrahend"*/
         newLine += "-$subtrahend"
 
         spacesAmount = newLine.length
