@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import kotlin.math.max
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -498,6 +499,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val resList = mutableListOf(" $lhv | $rhv")
     var newLine = ""
     var spacesAmount = 1
+    var dashLength = currentDividend.toString().length
 
 
     for (i in quotient.toString().indices) {
@@ -518,10 +520,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         ///=================================
 
         ///чертим линию под вычитаемым======
-        val substractionResultLength = newLine.trim().length
+        val subtractionResultLength = newLine.trim().length
         newLine = ""
-        repeat(spacesAmount - substractionResultLength) { newLine += " " }
-        repeat(substractionResultLength) { newLine += "-" }
+        repeat(spacesAmount - max(subtractionResultLength, dashLength)) { newLine += " " }
+        repeat(max(subtractionResultLength, dashLength)) { newLine += "-" }
 
         spacesAmount = newLine.length
 
@@ -538,6 +540,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
                 else ""
 
         spacesAmount = newLine.length
+        dashLength = newLine.trim().length
         currentDividend = ("${currentDividend - subtrahend}" +
                 if (digitsUsed < lhv.toString().length) lhv.toString()[digitsUsed]
                 else "").toInt()
