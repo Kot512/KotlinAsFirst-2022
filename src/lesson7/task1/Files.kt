@@ -337,7 +337,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             var line = it
 
             when {
-                line.matches(Regex("""\s*""")) -> {
+                line.trim().isEmpty() -> {
                     if (!emptyInRow) {
                         output.write("</p><p>")
                         emptyInRow = true
