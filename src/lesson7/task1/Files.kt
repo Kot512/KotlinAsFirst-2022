@@ -325,7 +325,9 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    var bCount = 0
+    TODO()
+}
+    /*var bCount = 0
     var iCount = 0
     var sCount = 0
 
@@ -378,7 +380,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
         output.write("</p></body></html>")
     }
-}
+}*/
 
 /**
  * Сложная (23 балла)
