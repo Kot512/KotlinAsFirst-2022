@@ -130,7 +130,7 @@ fun abs(v: List<Double>): Double =
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
 fun mean(list: List<Double>): Double =
-    if (list.isNotEmpty()) /*list.sum() / list.size*/ list.average()
+    if (list.isNotEmpty()) list.average()
     else 0.0
 
 /**
@@ -142,13 +142,11 @@ fun mean(list: List<Double>): Double =
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val av = mean(list)
-    return if (list.isEmpty()) return list
-    else {
-        for (i in list.indices) list[i] -= av
-        list
-    }
+    val average = mean(list)
+    list.indices.forEach { list[it] -= average }
+    return list
 }
+
 
 /**
  * Средняя (3 балла)
@@ -159,8 +157,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  */
 fun times(a: List<Int>, b: List<Int>): Int {
     var sum = 0
-    if (a.isNotEmpty())
-        for (i in a.indices) sum += a[i] * b[i]
+    for (i in a.indices) sum += a[i] * b[i]
     return sum
 }
 
@@ -172,12 +169,8 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0 при любом x.
  */
-fun polynom(p: List<Int>, x: Int): Int {
-    var sum = 0
-    if (p.isNotEmpty())
-        for (i in p.indices)
-            sum += p[i] * x.toDouble().pow(i).toInt()
-    return sum
+fun polynom(p: List<Int>, x: Int): Int = p.fold(0) { sum, el ->
+    sum + el * x.toDouble().pow(p.indexOf(el)).toInt()
 }
 
 
@@ -207,24 +200,8 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun isPrime(n: Int) = n > 1 && (2..n / 2).all { n % it != 0}
-fun factorize(n: Int): List<Int> {
-    var usableN = n
-    val result = mutableListOf<Int>()
-    if (n in listOf(2, 3, 5, 7)) result += n
-    for (i in 2..n / 2) {
-        if (usableN % i == 0 && isPrime(i)) {
-            while (usableN % i == 0 && usableN > 1) {
-                result += i
-                usableN /= i
-            }
-            if (usableN == 1) break
-        }
-    }
-    return if (result.size != 0)
-        result.sorted()
-    else listOf(n)
-}
+//fun isPrime(n: Int) = n > 1 && (2..n / 2).all { n % it != 0}
+fun factorize(n: Int): List<Int> = TODO()
 
 
 /**
@@ -234,23 +211,7 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String {
-    var usableN = n
-    val result = mutableListOf<Int>()
-    if (n in listOf(2, 3, 5, 7)) result += n
-    for (i in 2..n / 2) {
-        if (usableN % i == 0 && isPrime(i)) {
-            while (usableN % i == 0 && usableN > 1) {
-                result += i
-                usableN /= i
-            }
-            if (usableN == 1) break
-        }
-    }
-    return if (result.size != 0)
-        result.sorted().joinToString(separator = "*")
-    else "$n"
-}
+fun factorizeToString(n: Int): String = TODO()
 
 /**
  * Средняя (3 балла)
