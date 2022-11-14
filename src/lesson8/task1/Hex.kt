@@ -2,6 +2,12 @@
 
 package lesson8.task1
 
+import java.lang.IllegalArgumentException
+import kotlin.Int.Companion.MAX_VALUE
+import kotlin.math.abs
+import kotlin.math.max
+
+
 /**
  * Точка (гекс) на шестиугольной сетке.
  * Координаты заданы как в примере (первая цифра - y, вторая цифра - x)
@@ -36,7 +42,31 @@ data class HexPoint(val x: Int, val y: Int) {
      * Расстояние вычисляется как число единичных отрезков в пути между двумя гексами.
      * Например, путь межу гексами 16 и 41 (см. выше) может проходить через 25, 34, 43 и 42 и имеет длину 5.
      */
-    fun distance(other: HexPoint): Int = TODO()
+    fun distance(other: HexPoint): Int {
+        var pathLength = 0
+        var difference = Pair(x - other.x, y - other.y)
+
+        while (difference != Pair(0, 0)) {
+            when {
+                difference.first > 0 ->
+                    difference =
+                        if (difference.second < 0) Pair(difference.first - 1, difference.second + 1)
+                        else difference.copy(first = difference.first - 1)
+
+                difference.first < 0 ->
+                    difference =
+                        if (difference.second > 0) Pair(difference.first + 1, difference.second - 1)
+                        else difference.copy(first = difference.first + 1)
+
+                else ->
+                    difference =
+                        if (difference.second > 0) difference.copy(second = difference.second - 1)
+                        else difference.copy(second = difference.second + 1)
+            }
+            pathLength += 1
+        }
+        return pathLength
+    }
 
     override fun toString(): String = "$y.$x"
 }
@@ -66,7 +96,8 @@ data class Hexagon(val center: HexPoint, val radius: Int) {
      *
      * Вернуть true, если заданная точка находится внутри или на границе шестиугольника
      */
-    fun contains(point: HexPoint): Boolean = TODO()
+    fun contains(point: HexPoint): Boolean =
+        point.distance(center) <= radius
 }
 
 /**
@@ -105,12 +136,12 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
  * Если нет, его направление считается INCORRECT
  */
 enum class Direction {
-    RIGHT,      // слева направо, например 30 -> 34
-    UP_RIGHT,   // вверх-вправо, например 32 -> 62
-    UP_LEFT,    // вверх-влево, например 25 -> 61
-    LEFT,       // справа налево, например 34 -> 30
-    DOWN_LEFT,  // вниз-влево, например 62 -> 32
-    DOWN_RIGHT, // вниз-вправо, например 61 -> 25
+    RIGHT,      // слева направо, например 30 -> 34    0
+    UP_RIGHT,   // вверх-вправо, например 32 -> 62     1
+    UP_LEFT,    // вверх-влево, например 25 -> 61      2
+    LEFT,       // справа налево, например 34 -> 30    3
+    DOWN_LEFT,  // вниз-влево, например 62 -> 32       4
+    DOWN_RIGHT, // вниз-вправо, например 61 -> 25      5
     INCORRECT;  // отрезок имеет изгиб, например 30 -> 55 (изгиб в точке 35)
 
     /**
@@ -119,7 +150,12 @@ enum class Direction {
      * Вернуть направление, противоположное данному.
      * Для INCORRECT вернуть INCORRECT
      */
-    fun opposite(): Direction = TODO()
+    fun opposite(): Direction =
+        when (this.ordinal) {
+            in 0..2 -> Direction.values()[this.ordinal + 3]
+            in 3..5 -> Direction.values()[this.ordinal - 3]
+            else -> INCORRECT
+        }
 
     /**
      * Средняя (3 балла)
@@ -131,7 +167,12 @@ enum class Direction {
      * Для направления INCORRECT бросить исключение IllegalArgumentException.
      * При решении этой задачи попробуйте обойтись без перечисления всех семи вариантов.
      */
-    fun next(): Direction = TODO()
+    fun next(): Direction =
+        when (this.ordinal) {
+            in 0..4 -> Direction.values()[this.ordinal + 1]
+            5 -> Direction.values()[0]
+            else -> throw IllegalArgumentException()
+        }
 
     /**
      * Простая (2 балла)
@@ -155,7 +196,16 @@ enum class Direction {
  * 35, direction = UP_LEFT, distance = 2 --> 53
  * 45, direction = DOWN_LEFT, distance = 4 --> 05
  */
-fun HexPoint.move(direction: Direction, distance: Int): HexPoint = TODO()
+fun HexPoint.move(direction: Direction, distance: Int): HexPoint =
+    when (if (distance >= 0) direction else direction.opposite()) {
+        Direction.RIGHT -> HexPoint(this.x + abs(distance), this.y)
+        Direction.DOWN_RIGHT -> HexPoint(this.x + abs(distance), this.y - abs(distance))
+        Direction.LEFT -> HexPoint(this.x - abs(distance), this.y)
+        Direction.DOWN_LEFT -> HexPoint(this.x, this.y - abs(distance))
+        Direction.UP_LEFT -> HexPoint(this.x - abs(distance), this.y + abs(distance))
+        Direction.UP_RIGHT -> HexPoint(this.x, this.y + abs(distance))
+        else -> throw IllegalArgumentException()
+    }
 
 /**
  * Сложная (5 баллов)
@@ -193,6 +243,13 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> = TODO()
  * Если все три точки совпадают, вернуть шестиугольник нулевого радиуса с центром в данной точке.
  */
 fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? = TODO()
+/*//    множества всевозможных правильных шестиугольников, где каждая из точек может лежать на границе
+    val possHexA = mutableSetOf<Hexagon>()
+    val possHexB = mutableSetOf<Hexagon>()
+    val possHexC = mutableSetOf<Hexagon>()
+
+
+}*/
 
 /**
  * Очень сложная (20 баллов)
@@ -204,7 +261,52 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? = TODO
  *
  * Пример: 13, 32, 45, 18 -- шестиугольник радиусом 3 (с центром, например, в 15)
  */
-fun minContainingHexagon(vararg points: HexPoint): Hexagon = TODO()
+fun minContainingHexagon(vararg points: HexPoint): Hexagon {
+    require(points.isNotEmpty())
 
+//    определяю примерный центр, его погрешность и список центров, учитывающих погрешность
+    val center = HexPoint(
+        points.fold(0) { sum, el -> sum + el.x } / points.size,
+        points.fold(0) { sum, el -> sum + el.y } / points.size,
+    )
+
+    var radius = 0
+    points.forEach { radius = max(it.distance(center), radius) }
+    val inaccuracy =
+        if (radius / points.size < 1) 1
+        else radius / points.size
+
+    val centersWithInaccuracies = mutableListOf(center)
+    Direction.values().forEach {
+        if (it != Direction.INCORRECT)
+            centersWithInaccuracies += center.move(it, inaccuracy)
+    }
+
+    var optimalHex = Hexagon(center, radius)
+    var minRadius = MAX_VALUE
+
+//    =====================================
+
+//    поиск шестиугольника с наименьшим радиусом
+    centersWithInaccuracies.forEach { curCenter ->
+        var curRadius = 0
+        points.forEach { curRadius = max(it.distance(curCenter), curRadius) }
+        var hexagon = Hexagon(curCenter, curRadius)
+
+        while (points.any { !hexagon.contains(it) })
+            hexagon = hexagon.copy(radius = radius + 1)
+        if (hexagon.radius <= minRadius)
+            optimalHex = hexagon.also { minRadius = curRadius }
+    }
+//    ====================================
+
+    return optimalHex
+}
+
+/**
+ * задачи:
+ *  1) определить центр гекса
+ *  2) понять, какой у него будет размер
+ */
 
 

@@ -12,6 +12,8 @@ class HexTests {
     @Tag("3")
     fun hexPointDistance() {
         assertEquals(5, HexPoint(6, 1).distance(HexPoint(1, 4)))
+        assertEquals(1, HexPoint(3, 3).distance(HexPoint(2, 3)))
+        assertEquals(2, HexPoint(3, 3).distance(HexPoint(4, 4)))
     }
 
     @Test
@@ -25,6 +27,7 @@ class HexTests {
     fun hexagonContains() {
         assertTrue(Hexagon(HexPoint(3, 3), 1).contains(HexPoint(2, 3)))
         assertFalse(Hexagon(HexPoint(3, 3), 1).contains(HexPoint(4, 4)))
+        assertFalse(Hexagon(HexPoint(4, 3), 2).contains(HexPoint(7, 3)))
     }
 
     @Test
@@ -96,6 +99,7 @@ class HexTests {
         assertEquals(HexPoint(5, 0), HexPoint(5, 4).move(DOWN_LEFT, 4))
         assertEquals(HexPoint(1, 1), HexPoint(1, 1).move(DOWN_RIGHT, 0))
         assertEquals(HexPoint(4, 2), HexPoint(2, 2).move(LEFT, -2))
+        assertEquals(HexPoint(5, 6), HexPoint(5, 3).move(UP_RIGHT, 3))
         assertThrows(IllegalArgumentException::class.java) {
             HexPoint(0, 0).move(INCORRECT, 0)
         }
@@ -128,9 +132,18 @@ class HexTests {
     @Test
     @Tag("20")
     fun minContainingHexagon() {
-        val points = arrayOf(HexPoint(3, 1), HexPoint(3, 2), HexPoint(5, 4), HexPoint(8, 1))
-        val result = minContainingHexagon(*points)
+        var points = arrayOf(HexPoint(3, 1), HexPoint(3, 2), HexPoint(5, 4), HexPoint(8, 1))
+        var result = minContainingHexagon(*points)
         assertEquals(3, result.radius)
+        assertTrue(points.all { result.contains(it) })
+
+        points = arrayOf(
+            HexPoint(2, 5),
+            HexPoint(5, 6),
+            HexPoint(5, 1),
+            HexPoint(3, 0))
+        result = minContainingHexagon(*points)
+        assertEquals(5, result.radius)
         assertTrue(points.all { result.contains(it) })
     }
 

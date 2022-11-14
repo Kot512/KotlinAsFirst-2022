@@ -3,10 +3,7 @@
 package lesson8.task1
 
 import lesson1.task1.sqr
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 8: простые классы
 // Максимальное количество баллов = 40 (без очень трудных задач = 11)
@@ -82,7 +79,14 @@ data class Circle(val center: Point, val radius: Double) {
      * расстояние между их центрами минус сумма их радиусов.
      * Расстояние между пересекающимися окружностями считать равным 0.0.
      */
-    fun distance(other: Circle): Double = TODO()
+    private fun centersDistance(other: Circle): Double =
+        sqrt((this.center.x - other.center.x).pow(2) +
+                (this.center.y - other.center.y).pow(2)
+        )
+
+    fun distance(other: Circle): Double =
+        if (this.centersDistance(other) - this.radius - other.radius <= 0) 0.0
+        else this.centersDistance(other) - this.radius - other.radius
 
     /**
      * Тривиальная (1 балл)
@@ -96,6 +100,9 @@ data class Circle(val center: Point, val radius: Double) {
  * Отрезок между двумя точками
  */
 data class Segment(val begin: Point, val end: Point) {
+    val length =
+        sqrt((begin.x - end.x).pow(2) + (begin.y - end.y).pow(2))
+
     override fun equals(other: Any?) =
         other is Segment && (begin == other.begin && end == other.end || end == other.begin && begin == other.end)
 
@@ -109,7 +116,22 @@ data class Segment(val begin: Point, val end: Point) {
  * Дано множество точек. Вернуть отрезок, соединяющий две наиболее удалённые из них.
  * Если в множестве менее двух точек, бросить IllegalArgumentException
  */
-fun diameter(vararg points: Point): Segment = TODO()
+fun diameter(vararg points: Point): Segment {
+    var maxLength = 0.0
+    var result = Segment(Point(0.0, 0.0), Point(0.0, 0.0))
+
+    if (points.size < 2) throw IllegalArgumentException()
+
+    for (i in 0 until points.size - 1) {
+        for (k in i + 1 until points.size) {
+            if (maxLength <= Segment(points[i], points[k]).length)
+                result = Segment(points[i], points[k]).also {
+                    maxLength = Segment(points[i], points[k]).length
+                }
+        }
+    }
+    return result
+}
 
 /**
  * Простая (2 балла)
