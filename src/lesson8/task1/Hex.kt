@@ -333,8 +333,8 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
     )
     var curRadius = points.maxOfOrNull { it.distance(curCenter) }!! / 2
     var inaccuracy =
-        if (curRadius < 1) 1
-        else curRadius
+        if (curRadius * 2 < 1) 1
+        else curRadius * 2
 
 
     var optimalHex = Hexagon(curCenter, curRadius)
