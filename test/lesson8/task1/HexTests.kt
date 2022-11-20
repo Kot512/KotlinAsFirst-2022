@@ -132,7 +132,12 @@ class HexTests {
     @Test
     @Tag("20")
     fun minContainingHexagon() {
-        var points = arrayOf(HexPoint(3, 1), HexPoint(3, 2), HexPoint(5, 4), HexPoint(8, 1))
+        var points = arrayOf(
+            HexPoint(3, 1),
+            HexPoint(3, 2),
+            HexPoint(5, 4),
+            HexPoint(8, 1)
+        )
         var result = minContainingHexagon(*points)
         assertEquals(3, result.radius)
         assertTrue(points.all { result.contains(it) })
@@ -141,9 +146,21 @@ class HexTests {
             HexPoint(2, 5),
             HexPoint(5, 6),
             HexPoint(5, 1),
-            HexPoint(3, 0))
+            HexPoint(3, 0)
+        )
         result = minContainingHexagon(*points)
-        assertEquals(5, result.radius)
+        assertEquals(4, result.radius)
+        assertTrue(points.all { result.contains(it) })
+
+        points = arrayOf(
+            HexPoint(1, 4),
+            HexPoint(1, 3),
+            HexPoint(2, 3),
+            HexPoint(2, 2),
+            HexPoint(6, 4)
+        )
+        result = minContainingHexagon(*points)
+        assertEquals(3, result.radius)
         assertTrue(points.all { result.contains(it) })
     }
 

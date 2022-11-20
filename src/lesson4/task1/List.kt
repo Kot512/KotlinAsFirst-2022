@@ -183,12 +183,9 @@ fun polynom(p: List<Int>, x: Int): Int = TODO()
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    return if (list.size < 2) list
-    else {
-        for (i in 1 until list.size)
-            list[i] += list[i - 1]
-        list
-    }
+    for (i in 1 until list.size)
+        list[i] += list[i - 1]
+    return list
 }
 
 /**
@@ -347,7 +344,10 @@ fun russian(n: Int): String {
     val thousands =
         if (strN.size > 3) strN.subList(0, strN.size - 3)
         else mutableListOf<Char>()
-    val res =
-        body(thousands, 1) + tale(body(thousands, 1), thousands) + body(hundreds, 0)
+    val res = buildString {
+        append(body(thousands, 1))
+        append(tale(body(thousands, 1), thousands))
+        append(body(hundreds, 0))
+    }
     return res.trim()
 }

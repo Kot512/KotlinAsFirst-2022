@@ -11,14 +11,14 @@ import kotlin.math.max
 /**
  * Точка (гекс) на шестиугольной сетке.
  * Координаты заданы как в примере (первая цифра - y, вторая цифра - x)
- *
- *       60  61  62  63  64  65
- *     50  51  52  53  54  55  56
- *   40  41  42  43  44  45  46  47
- * 30  31  32  33  34  35  36  37  38
- *   21  22  23  24  25  26  27  28
- *     12  13  14  15  16  17  18
- *       03  04  05  06  07  08
+ *         70  71  72  73  74  75  76  77  78  79  (7 10)
+ *       60  61  62  63  64  65  66  67  68  69  (6 10)
+ *     50  51  52  53  54  55  56  57  58  59  (5 10)
+ *   40  41  42  43  44  45  46  47  48  49  (4 10)
+ * 30  31  32  33  34  35  36  37  38  39  (3 10)
+ *   21  22  23  24  25  26  27  28  29  (2 10)
+ *     12  13  14  15  16  17  18  19  (1 10)
+ *       03  04  05  06  07  08  09  (0 10)
  *
  * В примерах к задачам используются те же обозначения точек,
  * к примеру, 16 соответствует HexPoint(x = 6, y = 1), а 41 -- HexPoint(x = 1, y = 4).
@@ -264,49 +264,56 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? = TODO
 fun minContainingHexagon(vararg points: HexPoint): Hexagon {
     require(points.isNotEmpty())
 
-//    определяю примерный центр, его погрешность и список центров, учитывающих погрешность
-    val center = HexPoint(
+    // определяю примерный центр и погрешность его определения
+    var curCenter = HexPoint(
         points.fold(0) { sum, el -> sum + el.x } / points.size,
         points.fold(0) { sum, el -> sum + el.y } / points.size,
     )
+    var curRadius = points.maxOfOrNull { it.distance(curCenter) }!! / 2
+    var inaccuracy =
+        if (curRadius * 4 < 1) 1
+        else curRadius * 4
 
-    var radius = 0
-    points.forEach { radius = max(it.distance(center), radius) }
-    val inaccuracy =
-        if (radius / points.size < 1) 1
-        else radius / points.size
 
-    val centersWithInaccuracies = mutableListOf(center)
-    Direction.values().forEach {
-        if (it != Direction.INCORRECT)
-            centersWithInaccuracies += center.move(it, inaccuracy)
+    var optimalHex = Hexagon(curCenter, curRadius)
+    val hexes = mutableListOf<Hexagon>()
+
+    while (inaccuracy > 0) {
+        // для выбранного центра curCenter определяю список центров, сдвинутых на конкретное значение
+        // погрешности в каждую сторону
+        val centersWithInaccuracies = mutableListOf(curCenter)
+        Direction.values().forEach {
+            if (it != Direction.INCORRECT)
+                centersWithInaccuracies += curCenter.move(it, inaccuracy)
+        }
+
+        // для центра curCenter и его доп. центров строим шестиугольники с минимально возможным радиусом
+        // и добавляем в список
+        centersWithInaccuracies.forEach { center ->
+            var hexagon = Hexagon(center, curRadius)
+            var hexRadius = curRadius
+            while (points.any { !hexagon.contains(it) }) {
+                hexRadius += 1
+                hexagon = hexagon.copy(radius = hexRadius)
+            }
+            //println("радиус - ${hexagon.radius}, центр - ${hexagon.center}")
+            hexes += hexagon
+        }
+
+        // выбираем новый центр curCenter по шестиугольнику с минимальным радиусом:
+        // если выбранный центр совпадает со старым, то понижаем погрешность (пока не станет 0) и снова
+        // прогоняем старый центр, если несовпадает - выбираем новый и не меняем погрешность
+        optimalHex = hexes.minByOrNull { it.radius }!!
+        //println(inaccuracy)
+        inaccuracy = when {
+            optimalHex.center != curCenter -> inaccuracy
+            inaccuracy == 1 -> 0
+            else -> inaccuracy / 2
+        }
+        curRadius = optimalHex.radius / 2
+        curCenter = optimalHex.center
+        hexes.clear()
     }
-
-    var optimalHex = Hexagon(center, radius)
-    var minRadius = MAX_VALUE
-
-//    =====================================
-
-//    поиск шестиугольника с наименьшим радиусом
-    centersWithInaccuracies.forEach { curCenter ->
-        var curRadius = 0
-        points.forEach { curRadius = max(it.distance(curCenter), curRadius) }
-        var hexagon = Hexagon(curCenter, curRadius)
-
-        while (points.any { !hexagon.contains(it) })
-            hexagon = hexagon.copy(radius = radius + 1)
-        if (hexagon.radius <= minRadius)
-            optimalHex = hexagon.also { minRadius = curRadius }
-    }
-//    ====================================
-
+    //println("итог: ${optimalHex.center} с радиусом ${optimalHex.radius}")
     return optimalHex
 }
-
-/**
- * задачи:
- *  1) определить центр гекса
- *  2) понять, какой у него будет размер
- */
-
-
