@@ -276,6 +276,7 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
 
 
     var optimalHex = Hexagon(curCenter, curRadius)
+    var minR = MAX_VALUE
     val hexes = mutableListOf<Hexagon>()
 
     while (inaccuracy > 0) {
@@ -288,17 +289,22 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
         }
 
         // для центра curCenter и его доп. центров строим шестиугольники с минимально возможным радиусом
-        // и добавляем в список
+        // и добавляем в список в том случае, если радиус меньше или равен минимально допустимому радиусу minR
         centersWithInaccuracies.forEach { center ->
             var hexagon = Hexagon(center, curRadius)
             var hexRadius = curRadius
             while (points.any { !hexagon.contains(it) }) {
+                if (hexRadius > minR) break
                 hexRadius += 1
                 hexagon = hexagon.copy(radius = hexRadius)
             }
-            //println("радиус - ${hexagon.radius}, центр - ${hexagon.center}")
-            hexes += hexagon
+            if (hexRadius <= minR) {
+                minR = hexRadius
+                hexes += hexagon
+                //println("радиус - ${hexagon.radius}, центр - ${hexagon.center}")
+            }
         }
+        //println("минимально допустимый радиус - $minR")
 
         // выбираем новый центр curCenter по шестиугольнику с минимальным радиусом:
         // если выбранный центр совпадает со старым, то понижаем погрешность (пока не станет 0) и снова
@@ -308,12 +314,12 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
         inaccuracy = when {
             optimalHex.center != curCenter -> inaccuracy
             inaccuracy == 1 -> 0
-            else -> inaccuracy / 2
+            else -> inaccuracy / 3
         }
         curRadius = optimalHex.radius / 2
         curCenter = optimalHex.center
         hexes.clear()
     }
-    //println("итог: ${optimalHex.center} с радиусом ${optimalHex.radius}")
+    //println("===============итог: ${optimalHex.center} с радиусом ${optimalHex.radius}===================")
     return optimalHex
 }
