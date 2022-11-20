@@ -331,26 +331,38 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
         points.fold(0) { sum, el -> sum + el.x } / points.size,
         points.fold(0) { sum, el -> sum + el.y } / points.size,
     )
-    var curRadius = points.maxOfOrNull { it.distance(curCenter) }!! / 4
+    var curRadius = points.maxOfOrNull { it.distance(curCenter) }!! / 2
     var inaccuracy =
-        if (curRadius * 8 < 1) 1
-        else curRadius * 8
+        if (curRadius * 4 < 1) 1
+        else curRadius * 4
 
 
     var optimalHex = Hexagon(curCenter, curRadius)
     var minR = MAX_VALUE
     val hexes = mutableListOf<Hexagon>()
-    var accuracyCount = 0
 
     while (inaccuracy > 0) {
+
         // для выбранного центра curCenter определяю список центров, сдвинутых на конкретное значение
         // погрешности в каждую сторону
+
         val centersWithInaccuracies = mutableListOf(curCenter)
-        for (direction in Direction.values()) {
-            if (direction != Direction.INCORRECT)
-                centersWithInaccuracies += curCenter.move(direction, inaccuracy)
+        if (inaccuracy < 25) {
+            for (direction in Direction.values()) {
+                if (direction != Direction.INCORRECT)
+                    centersWithInaccuracies += curCenter.move(direction, inaccuracy)
+            }
         }
-        //println(centersWithInaccuracies)
+        else hexes.forEach {
+                for (direction in Direction.values()) {
+                    if (direction != Direction.INCORRECT)
+                        centersWithInaccuracies += it.center.move(direction, inaccuracy)
+            }
+        }
+
+
+        hexes.clear()
+        println("центры - $centersWithInaccuracies")
 
         // для центра curCenter и его доп. центров строим шестиугольники с минимально возможным радиусом
         // и добавляем в список в том случае, если радиус меньше или равен минимально допустимому радиусу minR
@@ -365,28 +377,28 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
             if (hexRadius <= minR) {
                 minR = hexRadius
                 hexes += hexagon
-                //println("радиус - ${hexagon.radius}, центр - ${hexagon.center}")
+                println("радиус - ${hexagon.radius}, центр - ${hexagon.center}")
             }
         }
-        //println("минимально допустимый радиус - $minR")
+        println("минимально допустимый радиус - $minR")
 
         // выбираем новый центр curCenter по шестиугольнику с минимальным радиусом:
         // если выбранный центр совпадает со старым, то понижаем погрешность (пока не станет 0) и снова
         // прогоняем старый центр, если несовпадает - выбираем новый и не меняем погрешность
         optimalHex = hexes.minByOrNull { it.radius }!!
-        //println(inaccuracy)
+        println(inaccuracy)
         inaccuracy = when {
             optimalHex.center != curCenter -> inaccuracy
             inaccuracy == 1 -> 0
             else ->
-                if ((inaccuracy / 2.0.pow(inaccuracy.toString().length) / 2).toInt() < 1) 1
-                else (inaccuracy / 2.0.pow(inaccuracy.toString().length) / 2).toInt()
+                if ((inaccuracy / 2.0.pow(inaccuracy.toString().length) / 1.5).toInt() < 1) 1
+                else (inaccuracy / 2.0.pow(inaccuracy.toString().length) / 1.5).toInt()
 
         }
         curRadius = optimalHex.radius / 2
         curCenter = optimalHex.center
-        hexes.clear()
     }
-    //println("===============итог: ${optimalHex.center} с радиусом ${optimalHex.radius}===================")
+
+    println("===============итог: ${optimalHex.center} с радиусом ${optimalHex.radius}===================")
     return optimalHex
 }
