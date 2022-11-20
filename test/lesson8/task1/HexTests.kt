@@ -173,6 +173,20 @@ class HexTests {
         assertTrue(points.all { result.contains(it) })
 
         points = arrayOf(
+            HexPoint(-999, -999),
+            HexPoint(644, -1000),
+            HexPoint(-557, -39),
+            HexPoint(-999, 832),
+            HexPoint(-650, 463),
+            HexPoint(-723, -1000),
+            HexPoint(615, -500),
+            HexPoint(-570, -999)
+        )
+        result = minContainingHexagon(*points)
+        assertEquals(1158, result.radius)
+        assertTrue(points.all { result.contains(it) })
+
+        points = arrayOf(
             HexPoint(1, 4),
             HexPoint(999999, 999999)
         )
