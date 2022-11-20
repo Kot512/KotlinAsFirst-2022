@@ -331,15 +331,16 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
         points.fold(0) { sum, el -> sum + el.x } / points.size,
         points.fold(0) { sum, el -> sum + el.y } / points.size,
     )
-    var curRadius = points.maxOfOrNull { it.distance(curCenter) }!! / 2
+    var curRadius = points.maxOfOrNull { it.distance(curCenter) }!! / 4
     var inaccuracy =
-        if (curRadius * 4 < 1) 1
-        else curRadius * 4
+        if (curRadius * 8 < 1) 1
+        else curRadius * 8
 
 
     var optimalHex = Hexagon(curCenter, curRadius)
     var minR = MAX_VALUE
     val hexes = mutableListOf<Hexagon>()
+    var accuracyCount = 0
 
     while (inaccuracy > 0) {
         // для выбранного центра curCenter определяю список центров, сдвинутых на конкретное значение
