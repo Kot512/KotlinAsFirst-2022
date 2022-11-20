@@ -6,6 +6,8 @@ import java.lang.IllegalArgumentException
 import kotlin.Int.Companion.MAX_VALUE
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.pow
 
 
 /**
@@ -48,25 +50,85 @@ data class HexPoint(val x: Int, val y: Int) {
 
         while (difference != Pair(0, 0)) {
             when {
-                difference.first > 0 ->
-                    difference =
-                        if (difference.second < 0) Pair(difference.first - 1, difference.second + 1)
-                        else difference.copy(first = difference.first - 1)
+                difference.first > 0 -> {
+                    if (difference.second < 0) {
+                        pathLength += min(abs(difference.first), abs(difference.second))
+                        difference =
+                            Pair(
+                                difference.first - min(abs(difference.first), abs(difference.second)),
+                                difference.second + min(abs(difference.first), abs(difference.second))
+                            )
+                    } else {
+                        pathLength += difference.first
+                        difference = difference.copy(first = 0)
+                    }
+                }
 
-                difference.first < 0 ->
-                    difference =
-                        if (difference.second > 0) Pair(difference.first + 1, difference.second - 1)
-                        else difference.copy(first = difference.first + 1)
+                difference.first < 0 -> {
+                    if (difference.second > 0) {
+                        pathLength += min(abs(difference.first), abs(difference.second))
+                        difference =
+                            Pair(
+                                difference.first + min(abs(difference.first), abs(difference.second)),
+                                difference.second - min(abs(difference.first), abs(difference.second))
+                            )
+                    } else {
+                        pathLength += abs(difference.first)
+                        difference = difference.copy(first = 0)
+                    }
+                }
 
-                else ->
-                    difference =
-                        if (difference.second > 0) difference.copy(second = difference.second - 1)
-                        else difference.copy(second = difference.second + 1)
+                else -> {
+                    pathLength += abs(difference.second)
+                    difference = difference.copy(second = 0)
+                }
             }
-            pathLength += 1
         }
         return pathLength
     }
+        /*var pathLength = 0
+        var differenceX = x - other.x
+        var differenceY = y - other.y
+        println("x - $differenceX, y - $differenceY")
+
+        while (differenceX != 0 && differenceY != 0) {
+            when {
+                differenceX > 0 && differenceY < 0 -> {
+                    pathLength += abs(differenceX - differenceY)
+                    differenceX -= abs(differenceX - differenceY)
+                    differenceY += abs(differenceX - differenceY)
+                }
+
+                differenceX > 0 -> {
+                    pathLength += differenceX
+                    differenceX = 0
+                }
+
+                differenceY > 0 && differenceX < 0 -> {
+                    pathLength += abs(differenceX - differenceY)
+                    differenceY -= abs(differenceX - differenceY)
+                    differenceX += abs(differenceX - differenceY)
+                }
+
+                differenceY > 0 -> {
+                    pathLength += differenceY
+                    differenceY = 0
+                }
+
+                differenceX < 0 -> {
+                    pathLength += abs(differenceX)
+                    differenceX = 0
+                }
+
+                differenceY < 0 -> {
+                    pathLength += abs(differenceY)
+                    differenceY = 0
+                }
+            }
+        }
+        return pathLength
+    }*/
+
 
     override fun toString(): String = "$y.$x"
 }
@@ -271,8 +333,8 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
     )
     var curRadius = points.maxOfOrNull { it.distance(curCenter) }!! / 2
     var inaccuracy =
-        if (curRadius * 2 < 1) 1
-        else curRadius * 2
+        if (curRadius < 1) 1
+        else curRadius
 
 
     var optimalHex = Hexagon(curCenter, curRadius)
@@ -283,14 +345,15 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
         // для выбранного центра curCenter определяю список центров, сдвинутых на конкретное значение
         // погрешности в каждую сторону
         val centersWithInaccuracies = mutableListOf(curCenter)
-        Direction.values().forEach {
-            if (it != Direction.INCORRECT)
-                centersWithInaccuracies += curCenter.move(it, inaccuracy)
+        for (direction in Direction.values()) {
+            if (direction != Direction.INCORRECT)
+                centersWithInaccuracies += curCenter.move(direction, inaccuracy)
         }
+        //println(centersWithInaccuracies)
 
         // для центра curCenter и его доп. центров строим шестиугольники с минимально возможным радиусом
         // и добавляем в список в том случае, если радиус меньше или равен минимально допустимому радиусу minR
-        centersWithInaccuracies.forEach { center ->
+        for (center in centersWithInaccuracies) {
             var hexagon = Hexagon(center, curRadius)
             var hexRadius = curRadius
             while (points.any { !hexagon.contains(it) }) {
@@ -314,7 +377,9 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
         inaccuracy = when {
             optimalHex.center != curCenter -> inaccuracy
             inaccuracy == 1 -> 0
-            else -> inaccuracy / 3
+            else ->
+                if ((inaccuracy / 2.0.pow(inaccuracy.toString().length)).toInt() < 1) 1
+                else (inaccuracy / 2.0.pow(inaccuracy.toString().length)).toInt()
         }
         curRadius = optimalHex.radius / 2
         curCenter = optimalHex.center
