@@ -289,65 +289,71 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 
-fun body(l:List<Char>, k: Int): String {
-    var num = ""
+fun numberToLetters(n: String, indicator: Int): String {
     val rus = mapOf(
-        1 to "один ", 2 to "два ", 3 to "три ", 4 to "четыре ",
-        5 to "пять ", 6 to "шесть ", 7 to "семь ", 8 to "восемь ", 9 to "девять ",
-        10 to "десять ", 20 to "двадцать ", 30 to "тридцать ", 40 to "сорок ",
-        50 to "пятьдесят ", 60 to "шестьдесят ", 70 to "семьдесят ", 80 to "восемьдесят ",
-        90 to "девяносто ", 100 to "сто ", 200 to "двести ", 300 to "триста ",
-        400 to "четыреста ", 500 to "пятьсот ", 600 to "шестьсот ", 700 to "семьсот ",
-        800 to "восемьсот ", 900 to "девятьсот "
+        "1" to "один ", "2" to "два ", "3" to "три ", "4" to "четыре ",
+        "5" to "пять ", "6" to "шесть ", "7" to "семь ", "8" to "восемь ", "9" to "девять ",
+        "10" to "десять ", "11" to "одиннадцать ", "12" to "двенадцать ", "13" to "тринадцать ",
+        "14" to "четырнадцать ", "15" to "пятнадцать ", "16" to "шестнадцать ", "17" to "семнадцать ",
+        "18" to "восемнадцать ", "19" to "девятнадцать ", "20" to "двадцать ", "30" to "тридцать ",
+        "40" to "сорок ", "50" to "пятьдесят ", "60" to "шестьдесят ", "70" to "семьдесят ",
+        "80" to "восемьдесят ", "90" to "девяносто ", "100" to "сто ", "200" to "двести ", "300" to "триста ",
+        "400" to "четыреста ", "500" to "пятьсот ", "600" to "шестьсот ", "700" to "семьсот ",
+        "800" to "восемьсот ", "900" to "девятьсот "
     )
 
-    for (i in l.indices) {
-        val uN =
-            l[i].digitToInt() * 10.0.pow(l.size - 1 - i).toInt()
-        num += rus[uN] ?: ""
-    }
-
-    val replaceble = mapOf(
-        "десять один" to "одиннадцать", "десять два" to "двенадцать",
-        "десять три" to "тринадцать", "десять четыре" to "четырнадцать",
-        "десять пять" to "пятнадцать", "десять шесть" to "шестнадцать",
-        "десять семь" to "семнадцать", "десять восемь" to "восемнадцать",
-        "десять девять" to "девятнадцать", "null" to ""
-    )
-    for (i in replaceble.keys) num = num.replace(i, replaceble[i] ?: "")
-    if (k == 1) num = num.replace("один ", "одна ")
-    if (k == 1) num = num.replace("два ", "две ")
-    return num
-}
-
-fun tale(body: String, n:List<Char>): String {
-    val uN = n.fold("") { s, el -> s + el} + "000"
-    val zeroAmount = uN.count {it == '0'}
-    if (body == "") return ""
-    return when (zeroAmount) {
-        in 0..2 -> ""
-        in 3..5 -> when (body.substring(body.length - 3, body.length)) {
-            "на " -> "тысяча "
-            in listOf("ве ", "ри ", "ре ") -> "тысячи "
-            else -> "тысяч "
+    val strDigit = mutableListOf<String>()
+    for ((position, digit) in n.withIndex()) {
+        strDigit += buildString {
+            append(digit)
+            repeat(n.length - position - 1) { append(0) }
         }
-
-        else -> ""
     }
+    if (strDigit.size > 1 && strDigit[strDigit.size - 2].replace("0", "") + strDigit[strDigit.size - 1] in rus.keys) {
+        strDigit[strDigit.size - 2] =
+            strDigit[strDigit.size - 2].replace("0", "") + strDigit[strDigit.size - 1]
+        strDigit.removeAt(strDigit.size - 1)
+    }
+
+    var result = strDigit.joinToString(separator = "") { rus[it] ?: "" }
+    if (indicator == 1) {
+        result = result.replace("один ", "одна ")
+        result = result.replace("два ", "две ")
+    }
+    return result
 }
+
 
 fun russian(n: Int): String {
-    val strN = n.toString().toMutableList()
-    val hundreds =
-        if (strN.size >= 3) strN.subList(strN.size - 3, strN.size)
-        else strN
+    val strN = n.toString()
     val thousands =
-        if (strN.size > 3) strN.subList(0, strN.size - 3)
-        else mutableListOf<Char>()
-    val res = buildString {
-        append(body(thousands, 1))
-        append(tale(body(thousands, 1), thousands))
-        append(body(hundreds, 0))
+        numberToLetters(
+            if (strN.length > 3) strN.substring(0, strN.length - 3)
+            else "",
+            1
+        )
+    val hundreds =
+        numberToLetters(
+            if (strN.length >= 3) strN.substring(strN.length - 3, strN.length)
+            else strN,
+            0
+        )
+
+    val result = buildString {
+        if (thousands.isNotEmpty()) {
+            append(thousands)
+            append(
+                when (thousands.substring(thousands.length - 3, thousands.length)) {
+                    "на " -> "тысяча "
+                    in listOf("ве ", "ри ", "ре ") -> "тысячи "
+                    else -> "тысяч "
+                }
+            )
+        }
+        append(hundreds.trimEnd())
     }
-    return res.trim()
+    return result.trim()
 }
+
+
+
