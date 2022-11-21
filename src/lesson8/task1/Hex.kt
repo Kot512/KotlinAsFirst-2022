@@ -86,48 +86,6 @@ data class HexPoint(val x: Int, val y: Int) {
         }
         return pathLength
     }
-        /*var pathLength = 0
-        var differenceX = x - other.x
-        var differenceY = y - other.y
-        println("x - $differenceX, y - $differenceY")
-
-        while (differenceX != 0 && differenceY != 0) {
-            when {
-                differenceX > 0 && differenceY < 0 -> {
-                    pathLength += abs(differenceX - differenceY)
-                    differenceX -= abs(differenceX - differenceY)
-                    differenceY += abs(differenceX - differenceY)
-                }
-
-                differenceX > 0 -> {
-                    pathLength += differenceX
-                    differenceX = 0
-                }
-
-                differenceY > 0 && differenceX < 0 -> {
-                    pathLength += abs(differenceX - differenceY)
-                    differenceY -= abs(differenceX - differenceY)
-                    differenceX += abs(differenceX - differenceY)
-                }
-
-                differenceY > 0 -> {
-                    pathLength += differenceY
-                    differenceY = 0
-                }
-
-                differenceX < 0 -> {
-                    pathLength += abs(differenceX)
-                    differenceX = 0
-                }
-
-                differenceY < 0 -> {
-                    pathLength += abs(differenceY)
-                    differenceY = 0
-                }
-            }
-        }
-        return pathLength
-    }*/
 
 
     override fun toString(): String = "$y.$x"
@@ -362,7 +320,6 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
 
 
         hexes.clear()
-        println("центры - $centersWithInaccuracies")
 
         // для центра curCenter и его доп. центров строим шестиугольники с минимально возможным радиусом
         // и добавляем в список в том случае, если радиус меньше или равен минимально допустимому радиусу minR
@@ -377,16 +334,13 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
             if (hexRadius <= minR) {
                 minR = hexRadius
                 hexes += hexagon
-                println("радиус - ${hexagon.radius}, центр - ${hexagon.center}")
             }
         }
-        println("минимально допустимый радиус - $minR")
 
         // выбираем новый центр curCenter по шестиугольнику с минимальным радиусом:
         // если выбранный центр совпадает со старым, то понижаем погрешность (пока не станет 0) и снова
         // прогоняем старый центр, если несовпадает - выбираем новый и не меняем погрешность
         optimalHex = hexes.minByOrNull { it.radius }!!
-        println(inaccuracy)
         inaccuracy = when {
             optimalHex.center != curCenter -> inaccuracy
             inaccuracy == 1 -> 0
@@ -399,6 +353,6 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
         curCenter = optimalHex.center
     }
 
-    println("===============итог: ${optimalHex.center} с радиусом ${optimalHex.radius}===================")
+
     return optimalHex
 }
