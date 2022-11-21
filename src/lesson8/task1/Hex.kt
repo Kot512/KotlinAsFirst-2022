@@ -344,8 +344,8 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
     while (inaccuracy > 0) {
 
         // для выбранного центра curCenter определяю список центров, сдвинутых на конкретное значение
-        // погрешности в каждую сторону (на малых значениях погрешности обхватывается большее кол-во центров
-        // для большей точности
+        // погрешности в каждую сторону
+
         val centersWithInaccuracies = mutableListOf(curCenter)
         if (inaccuracy < 25) {
             for (direction in Direction.values()) {
@@ -354,13 +354,16 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
             }
         }
         else hexes.forEach {
-                for (direction in Direction.values()) {
-                    if (direction != Direction.INCORRECT)
-                        centersWithInaccuracies += it.center.move(direction, inaccuracy)
+            for (direction in Direction.values()) {
+                if (direction != Direction.INCORRECT)
+                    centersWithInaccuracies += it.center.move(direction, inaccuracy)
             }
         }
 
+
         hexes.clear()
+        println("центры - $centersWithInaccuracies")
+
         // для центра curCenter и его доп. центров строим шестиугольники с минимально возможным радиусом
         // и добавляем в список в том случае, если радиус меньше или равен минимально допустимому радиусу minR
         for (center in centersWithInaccuracies) {
@@ -374,13 +377,16 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
             if (hexRadius <= minR) {
                 minR = hexRadius
                 hexes += hexagon
+                println("радиус - ${hexagon.radius}, центр - ${hexagon.center}")
             }
         }
+        println("минимально допустимый радиус - $minR")
 
         // выбираем новый центр curCenter по шестиугольнику с минимальным радиусом:
         // если выбранный центр совпадает со старым, то понижаем погрешность (пока не станет 0) и снова
         // прогоняем старый центр, если несовпадает - выбираем новый и не меняем погрешность
         optimalHex = hexes.minByOrNull { it.radius }!!
+        println(inaccuracy)
         inaccuracy = when {
             optimalHex.center != curCenter -> inaccuracy
             inaccuracy == 1 -> 0
@@ -392,5 +398,7 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
         curRadius = optimalHex.radius / 2
         curCenter = optimalHex.center
     }
+
+    println("===============итог: ${optimalHex.center} с радиусом ${optimalHex.radius}===================")
     return optimalHex
 }
