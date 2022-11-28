@@ -2,6 +2,7 @@
 
 package lesson7.task1
 
+import ru.spbstu.wheels.out
 import java.io.File
 import kotlin.math.max
 import kotlin.math.min
@@ -67,7 +68,7 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
 fun deleteMarked(inputName: String, outputName: String) {
     File(outputName).bufferedWriter().use { output ->
         File(inputName).forEachLine { input ->
-            if (input == "" || input[0] != '_')
+            if (input.isEmpty() || input[0] != '_')
                 output.write(input).also { output.newLine() }
         }
     }
@@ -84,20 +85,21 @@ fun deleteMarked(inputName: String, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val countMap = mutableMapOf<String, Int>()
+    var lines = ""
+    File(inputName).useLines { list -> lines = list.joinToString(separator = " ") { it.lowercase() } }
+
     substrings.forEach { string ->
         var count = 0
-        File(inputName).forEachLine { line ->
-            for (i in 0..line.length - string.length)
-                if (
-                    string.uppercase() in line.uppercase() &&
-                    line.substring(i, i + string.length).uppercase()
-                    == string.uppercase()
-                ) count++
-        }
+        for (i in 0..lines.length - string.length)
+            if (
+                string.lowercase() in lines &&
+                lines.substring(i, i + string.length).equals(string, true)
+            ) count++
         countMap[string] = count
     }
     return countMap
 }
+
 
 
 
@@ -115,7 +117,9 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    val corrections =
+    TODO()
+}
+    /*val corrections =
         mapOf(
             'ы' to 'и', 'ю' to 'у', 'я' to 'а',
             'Ы' to 'И', 'Ю' to 'У', 'Я' to 'А'
@@ -136,7 +140,7 @@ fun sibilants(inputName: String, outputName: String) {
             output.write(line).also { output.newLine() }
         }
     }
-}
+}*/
 
 /**
  * Средняя (15 баллов)
@@ -156,7 +160,9 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    File(outputName).bufferedWriter().use { output ->
+
+    }
 }
 
 /**

@@ -116,7 +116,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
-    !a.keys.any { b[it] == null || b[it] != a[it] }
+    a.keys.all { b[it] == a[it] }
 
 
 /**
@@ -135,7 +135,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
  */
 
 fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): MutableMap<String, String> {
-    a.keys.removeAll(b.filterKeys { it in a && a[it] == b[it] }.keys)
+    a.keys.removeAll(b.filterKeys { a[it] == b[it] }.keys)
     return a
 }
 
@@ -328,13 +328,6 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    /*for ((i1, el1) in list.withIndex()) {
-        for ((i2, el2) in list.withIndex())
-            if (i1 != i2 && el1 + el2 == number)
-                return Pair(i1, i2)
-    }
-    return Pair(-1, -1)
-}*/
     for (i in 0 until list.size - 1) {
         if (number - list[i] in list.subList(i + 1, list.size))
             return i to list.subList(i + 1, list.size)
@@ -342,7 +335,6 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     }
     return Pair(-1, -1)
 }
-
 
 /**
  * Очень сложная (8 баллов)
