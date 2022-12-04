@@ -305,18 +305,12 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
         // погрешности в каждую сторону
 
         val centersWithInaccuracies = mutableListOf(curCenter)
-        if (inaccuracy < 100) {
-            for (direction in Direction.values()) {
-                if (direction != Direction.INCORRECT)
-                    centersWithInaccuracies += curCenter.move(direction, inaccuracy)
-            }
-        } else hexes.forEach {
+        hexes.forEach {
             for (direction in Direction.values()) {
                 if (direction != Direction.INCORRECT)
                     centersWithInaccuracies += it.center.move(direction, inaccuracy)
             }
         }
-
 
         hexes.clear()
 
