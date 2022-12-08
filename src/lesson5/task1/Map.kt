@@ -331,7 +331,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val filteredList =
         list.withIndex().filter { number - it.value in list
         }.sortedWith (compareBy { it.value })
-    return if (filteredList.size > 1) Pair(filteredList[0].index, filteredList[1].index )
+    return if (filteredList.size > 1)
+        Pair(filteredList[filteredList.size - 2].index, filteredList[filteredList.size - 1].index)
     else Pair(-1, -1)
 }
 
