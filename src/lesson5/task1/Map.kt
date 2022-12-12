@@ -116,7 +116,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
-    a.keys.all { b[it] == a[it] }
+    a.all { b[it.key] == it.value }
 
 
 /**
@@ -236,10 +236,11 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> =
-   list.associateWith {
+fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+   /*list.associateWith {
            entry -> list.count { it == entry }
    }.filterValues { it > 1 }
+   */
 
 /**
  * Средняя (3 балла)
