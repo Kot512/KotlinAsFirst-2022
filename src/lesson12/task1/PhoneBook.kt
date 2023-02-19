@@ -18,7 +18,6 @@ package lesson12.task1
  * Класс должен иметь конструктор по умолчанию (без параметров).
  */
 class PhoneBook {
-
     override fun hashCode(): Int = phoneList.hashCode()
 
     private val phoneList = mutableMapOf<String, MutableSet<String>>()
