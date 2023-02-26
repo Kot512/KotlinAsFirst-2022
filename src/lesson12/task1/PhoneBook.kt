@@ -22,21 +22,8 @@ class PhoneBook {
 
     private val phoneList = mutableMapOf<String, MutableSet<String>>()
 
-    private fun deletePhone(name: String, phone: String): Unit {
-        phoneList[name]!!.forEach {
-            if (formatted(phone) == formatted(it))
-                phoneList[name]!!.remove(it)
-        }
-    }
-
     private fun formatCheck(number: String): Boolean =
         number.matches(Regex("""[^A-zА-я ]+"""))
-
-    private fun formatted(phone: String): String =
-        phone.replace(Regex("""\D+"""), "")
-
-    private fun formatted(phones: Set<String>): Set<String> =
-        phones.map { formatted(it) }.toMutableSet()
 
 
     /**
@@ -73,7 +60,7 @@ class PhoneBook {
     fun addPhone(name: String, phone: String): Boolean =
         if (
             !formatCheck(phone) ||
-            formatted(phone) in formatted(phoneList.values.flatten().toSet()) ||
+            phone in phoneList.values.flatten() ||
             phoneList[name] == null
         ) false else {
             phoneList[name]!! += phone
@@ -91,9 +78,9 @@ class PhoneBook {
         if (
             formatCheck(phone) &&
             phoneList[name] != null &&
-            formatted(phone) in formatted(phoneList[name]!!)
+            phone in phoneList[name]!!
         ) {
-            deletePhone(name, phone)
+            phoneList[name]!!.remove(phone)
             true
         } else false
 
@@ -108,13 +95,11 @@ class PhoneBook {
      * Вернуть имя человека по заданному номеру телефона.
      * Если такого номера нет в книге, вернуть null.
      */
-    fun humanByPhone(phone: String): String? {
-        phoneList.forEach { (name, phones) ->
-            if (formatted(phone) in formatted(phones))
-                return name
-        }
-        return null
-    }
+
+//     тут тоже с перебором, но я не совсем понимаю, как сделать без него
+    fun humanByPhone(phone: String): String? =
+        phoneList.filterValues { phone in it }.keys.firstOrNull()
+
 
     /**
      * Две телефонные книги равны, если в них хранится одинаковый набор людей,
@@ -125,8 +110,7 @@ class PhoneBook {
         if (other !is PhoneBook) return false
         this.phoneList.forEach { (name, phones) ->
             if (
-                other.phoneList[name] == null ||
-                formatted(phones) != formatted(other.phoneList[name]!!)
+                phones != other.phoneList[name]!!
             ) return false
         }
         return true
