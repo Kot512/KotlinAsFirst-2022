@@ -18,12 +18,14 @@ package lesson12.task1
  * Класс должен иметь конструктор по умолчанию (без параметров).
  */
 class PhoneBook {
-    override fun hashCode(): Int = phoneList.hashCode()
+    override fun hashCode(): Int = humanPhoneMap.hashCode()
 
-    private val phoneList = mutableMapOf<String, MutableSet<String>>()
+    private val humanPhoneMap = mutableMapOf<String, MutableSet<String>>()
+    private var phoneHumanMap = mutableMapOf<String, String>()
 
     private fun formatCheck(number: String): Boolean =
         number.matches(Regex("""[^A-zА-я ]+"""))
+
 
 
     /**
@@ -33,8 +35,8 @@ class PhoneBook {
      * (во втором случае телефонная книга не должна меняться).
      */
     fun addHuman(name: String): Boolean =
-        if (phoneList[name] == null) {
-            phoneList[name] = mutableSetOf<String>()
+        if (humanPhoneMap[name] == null) {
+            humanPhoneMap[name] = mutableSetOf<String>()
             true
         } else false
 
@@ -45,8 +47,9 @@ class PhoneBook {
      * (во втором случае телефонная книга не должна меняться).
      */
     fun removeHuman(name: String): Boolean =
-        if (phoneList[name] != null) {
-            phoneList.remove(name)
+        if (humanPhoneMap[name] != null) {
+            humanPhoneMap.remove(name)
+            phoneHumanMap = phoneHumanMap.filter { it.value != name }.toMutableMap()
             true
         } else false
 
@@ -60,10 +63,11 @@ class PhoneBook {
     fun addPhone(name: String, phone: String): Boolean =
         if (
             !formatCheck(phone) ||
-            phone in phoneList.values.flatten() ||
-            phoneList[name] == null
+            phoneHumanMap[phone] != null ||
+            humanPhoneMap[name] == null
         ) false else {
-            phoneList[name]!! += phone
+            humanPhoneMap[name]!! += phone
+            phoneHumanMap[phone] = name
             true
         }
 
@@ -77,10 +81,11 @@ class PhoneBook {
     fun removePhone(name: String, phone: String): Boolean =
         if (
             formatCheck(phone) &&
-            phoneList[name] != null &&
-            phone in phoneList[name]!!
+            humanPhoneMap[name] != null &&
+            phoneHumanMap[phone] == name
         ) {
-            phoneList[name]!!.remove(phone)
+            humanPhoneMap[name]!!.remove(phone)
+            phoneHumanMap.remove(phone)
             true
         } else false
 
@@ -89,16 +94,15 @@ class PhoneBook {
      * Если этого человека нет в книге, вернуть пустой список
      */
     fun phones(name: String): Set<String> =
-        phoneList[name]?.toSet() ?: setOf<String>()
+        humanPhoneMap[name] ?: setOf<String>()
 
     /**
      * Вернуть имя человека по заданному номеру телефона.
      * Если такого номера нет в книге, вернуть null.
      */
 
-//     тут тоже с перебором, но я не совсем понимаю, как сделать без него
     fun humanByPhone(phone: String): String? =
-        phoneList.filterValues { phone in it }.keys.firstOrNull()
+        phoneHumanMap[phone]
 
 
     /**
@@ -108,9 +112,9 @@ class PhoneBook {
      */
     override fun equals(other: Any?): Boolean {
         if (other !is PhoneBook) return false
-        this.phoneList.forEach { (name, phones) ->
+        this.humanPhoneMap.forEach { (name, phones) ->
             if (
-                phones != other.phoneList[name]!!
+                phones != other.humanPhoneMap[name]!!
             ) return false
         }
         return true
